@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from app_main.models import Region, Districts
 
 
 class User(AbstractUser):
@@ -27,8 +26,8 @@ ACADEMY_OR_SCHOOL = (
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
     full_name = models.CharField(max_length=200)
-    region = models.ForeignKey(Region, on_delete=models.PROTECT)
-    districts = models.ForeignKey(Districts, on_delete=models.CASCADE)
+    region = models.CharField(max_length=200)
+    districts = models.CharField(max_length=200)
     address = models.CharField(max_length=500)
     brithday = models.CharField(max_length=20)
     academy_or_school = models.CharField(max_length=20, choices=ACADEMY_OR_SCHOOL)
