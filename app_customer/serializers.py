@@ -3,7 +3,6 @@ from .models import User, Student
 import random
 from .sms_service import send_sms  # SMS sending function
 from django.contrib.auth import get_user_model
-from app_main.models import Region, Districts
 from django.contrib.auth import authenticate
 User = get_user_model()
 
@@ -30,8 +29,8 @@ class StudentRegisterSerializer(serializers.Serializer):
     full_name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     phone = serializers.CharField(required=True)
-    region = serializers.IntegerField(required=True)  # This will be the ID of the Region
-    districts = serializers.IntegerField(required=True)  # This will be the ID of the District
+    region = serializers.CharField(required=True)  # This will be the ID of the Region
+    districts = serializers.CharField(required=True)  # This will be the ID of the districts
     address = serializers.CharField(required=True)
     brithday = serializers.CharField(required=True)
     academy_or_school = serializers.CharField(required=True)
@@ -49,22 +48,12 @@ class StudentRegisterSerializer(serializers.Serializer):
             'address': validated_data.pop('address'),
             'brithday': validated_data.pop('brithday'),
             'academy_or_school': validated_data.pop('academy_or_school'),
-            'class_name': validated_data.pop('class_name')
+            'class_name': validated_data.pop('class_name'),
+            "region": validated_data.pop('region'),
+            "districts": validated_data.pop('districts'),
         }
 
-        # Get Region and District instances from their IDs
-        region_id = validated_data.pop('region')
-        district_id = validated_data.pop('districts')
 
-        try:
-            region = Region.objects.get(id=region_id)
-        except Region.DoesNotExist:
-            raise serializers.ValidationError("Region with this ID does not exist.")
-
-        try:
-            district = Districts.objects.get(id=district_id)
-        except Districts.DoesNotExist:
-            raise serializers.ValidationError("District with this ID does not exist.")
 
         # Create user
         phone = validated_data.pop('phone')
@@ -78,10 +67,9 @@ class StudentRegisterSerializer(serializers.Serializer):
         user.save()
         print(sms_code)
 
-        # Create student profile with the Region and District instances
+        # Create student profile with the Region and districts instances
         student_data['user'] = user
-        student_data['region'] = region
-        student_data['districts'] = district
+
         student = Student.objects.create(**student_data)
 
         # Send SMS with the code

@@ -3,6 +3,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import StudentRegisterSerializer, VerifySmsCodeSerializer, LoginSerializer
 from .models import Student
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.settings import api_settings
+from datetime import timedelta
+from django.utils import timezone
+
+
+
+
+
 class RegisterStudentAPIView(APIView):
     """
     API to register user and send SMS code.
@@ -27,6 +36,8 @@ class VerifySmsCodeAPIView(APIView):
 
 
 
+
+
 class LoginAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
@@ -39,18 +50,24 @@ class LoginAPIView(APIView):
             except Student.DoesNotExist:
                 return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            # Return the details of the Student
+            # Generate JWT token with a 2-hour expiration time
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+            access_token.set_exp(lifetime=timedelta(hours=2))  # Set token expiry time to 2 hours
+            
+            # Prepare the student data
             student_data = {
                 "full_name": student.full_name,
                 "email": user.email,
                 "phone": user.phone,
-                "region": student.region.name,  # Assuming 'region' is a related model
-                "districts": student.districts.name,  # Assuming 'districts' is a related model
+                "region": student.region,  # Assuming 'region' is a related model
+                "districts": student.districts,  # Assuming 'districts' is a related model
                 "address": student.address,
                 "brithday": student.brithday,
                 "academy_or_school": student.academy_or_school,
                 "class_name": student.class_name,
-                "status": student.status
+                "status": student.status,
+                "access_token": str(access_token),  # Include the access token in the response
             }
             
             return Response(student_data, status=status.HTTP_200_OK)
