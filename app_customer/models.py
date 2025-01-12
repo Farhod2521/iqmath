@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    # username = None  # username maydonini o'chirish
+    username = None  # username maydonini o'chirish
     phone = models.CharField(max_length=15, unique=True)  # phone endi unikallashadi
     role = models.CharField(
         max_length=10,
