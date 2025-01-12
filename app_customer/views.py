@@ -43,31 +43,31 @@ class LoginAPIView(APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data["user"]
-            
-            # Retrieve the Student profile associated with the User
+
             try:
                 student = Student.objects.get(user=user)
             except Student.DoesNotExist:
                 return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            # Generate JWT token with a 2-hour expiration time
+            # Generate JWT token with custom claims
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-            access_token.set_exp(lifetime=timedelta(hours=2))  # Set token expiry time to 2 hours
-            
-            # Prepare the student data
+            access_token.set_exp(lifetime=timedelta(hours=2))
+            access_token['student_id'] = student.id  # Add student ID to the token payload
+
             student_data = {
+                "id": student.id,
                 "full_name": student.full_name,
                 "email": user.email,
                 "phone": user.phone,
-                "region": student.region,  # Assuming 'region' is a related model
-                "districts": student.districts,  # Assuming 'districts' is a related model
+                "region": student.region,
+                "districts": student.districts,
                 "address": student.address,
                 "brithday": student.brithday,
                 "academy_or_school": student.academy_or_school,
                 "class_name": student.class_name,
                 "status": student.status,
-                "access_token": str(access_token),  # Include the access token in the response
+                "access_token": str(access_token),  # Return the token as string
             }
             
             return Response(student_data, status=status.HTTP_200_OK)

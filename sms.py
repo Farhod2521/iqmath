@@ -68,10 +68,18 @@ if __name__ == '__main__':
 ######   LOGIN #############
 {
   "phone": "998915812109",
-  "password": "IJ6AiGX3"
+  "password": "Z5JNhxMY"
 }
 
-
+{
+    "student":1,
+    "quiz_id": 1,
+    "answers": [
+        {"quiz_id": 1, "answer": "A"},
+        {"quiz_id": 2, "answer": "B"}
+    ],
+    "end_time": "2025-01-12T12:00:00Z"
+}
 
 from django.contrib.auth.models import User
 User.objects.create_superuser(
@@ -79,3 +87,19 @@ User.objects.create_superuser(
     email="example@example.com",
     password="1"
 )
+
+
+{
+    "id": 2,
+    "full_name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "998915812109",
+    "region": "Toshkent",
+    "districts": "chilzonr",
+    "address": "Tashkent, Uzbekistan",
+    "brithday": "1990-01-01",
+    "academy_or_school": "Litsey",
+    "class_name": "10-A",
+    "status": true,
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2Njc2MzA4LCJpYXQiOjE3MzY2NjkxMDgsImp0aSI6ImUyNjczZDRlMDAwNTQ5N2NiMTcwZDAzYjU3NDYwMWMwIiwidXNlcl9pZCI6N30.ivqVWXF2nSosbePjKlJMyYI2yctwYOX-HRaqqdvINNM"
+}
