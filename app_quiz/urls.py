@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    ScienceListView, QuizListView, SubmitQuizResultView,
+    ScienceListView, QuizListView, ResultCreateAPIView,
     ScienceCreateAPIView, ScienceUpdateAPIView, ScienceDestroyAPIView
 )
 
@@ -19,5 +19,5 @@ urlpatterns = [
     ############################ APP MAIN #################################
     path('sciences/list/', ScienceListView.as_view(), name='science-list'),
     path('quizzes/<int:science_id>/', QuizListView.as_view(), name='quiz-list'),
-    path('submit-quiz-result/', SubmitQuizResultView.as_view(), name='submit-quiz-result'),
+    path('submit-quiz-result/', ResultCreateAPIView.as_view(), name='submit-quiz-result'),
 ]

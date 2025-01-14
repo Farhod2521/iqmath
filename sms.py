@@ -103,3 +103,6 @@ User.objects.create_superuser(
     "status": true,
     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2Njc2MzA4LCJpYXQiOjE3MzY2NjkxMDgsImp0aSI6ImUyNjczZDRlMDAwNTQ5N2NiMTcwZDAzYjU3NDYwMWMwIiwidXNlcl9pZCI6N30.ivqVWXF2nSosbePjKlJMyYI2yctwYOX-HRaqqdvINNM"
 }
+
+
+

@@ -73,20 +73,21 @@ class QuizListView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+from datetime import datetime
 
+class ResultCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
-class SubmitQuizResultView(APIView):
     def post(self, request):
         token_header = request.headers.get('Authorization', '')
         if not token_header or not token_header.startswith('Bearer '):
             return Response({"error": "Authorization token missing or invalid"}, status=401)
 
-        token = token_header.split(' ')[1]  # 'Bearer' ni olib tashlab, faqat tokenni olish
+        token = token_header.split(' ')[1]  # 'Bearer' so'zini olib tashlab, faqat tokenni olish
 
         try:
             # Imzoni tekshirmasdan faqat payloadni olish
             decoded_token = jwt.decode(token, options={"verify_signature": False})
-            print("Decoded payload:", decoded_token)
         except jwt.DecodeError:
             return Response({"error": "Failed to decode token"}, status=401)
 
@@ -99,43 +100,65 @@ class SubmitQuizResultView(APIView):
         except Student.DoesNotExist:
             return Response({"error": "Student not found"}, status=404)
 
-        # Continue with quiz result processing
-        quiz_id = request.data.get('quiz_id')
-        answers = request.data.get('answers')
-        end_time = request.data.get('end_time')
+        data = request.data
+        answers = data.get("answers", [])
+        end_time_str = data.get("end_time")
 
-        if not quiz_id or not answers or not end_time:
-            return Response({"error": "Missing required fields"}, status=400)
-
-        try:
-            quiz = Quiz.objects.get(id=quiz_id)
-        except Quiz.DoesNotExist:
-            return Response({"error": "Quiz not found"}, status=404)
-
-        score = 0
-        correct_answers = 0
+        # Savollar bo'yicha natijani hisoblash
         total_questions = len(answers)
+        correct_answers = 0
+        total_score = 0
+        science_set = set()
 
-        for answer_data in answers:
-            quiz_answer = quiz.answer
-            if answer_data['answer'] == quiz_answer:
-                score += quiz.score
-                correct_answers += 1
+        for answer in answers:
+            quiz_id = answer.get("quiz_id")
+            user_answer = answer.get("answer")
 
-        result_data = {
-            'student': student.id,
-            'quiz': quiz.id,
-            'science': quiz.science.id if quiz.science else None,
-            'score': score,
-            'total_questions': total_questions,
-            'correct_answers': correct_answers,
-            'end_time': end_time
+            try:
+                quiz = Quiz.objects.get(id=quiz_id)
+                science_set.add(quiz.science)
+                if quiz.answer == user_answer:
+                    correct_answers += 1
+                    total_score += quiz.score
+            except Quiz.DoesNotExist:
+                return Response({"error": f"Quiz with id {quiz_id} not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Science ni aniqlash (bitta fandan test bo'lishi kerak)
+        if len(science_set) != 1:
+            return Response({"error": "All questions must belong to the same science"}, status=status.HTTP_400_BAD_REQUEST)
+        science = science_set.pop()
+
+        # Urinishlar sonini aniqlash
+        attempt_number = Result.objects.filter(student=student, science=science).count() + 1
+
+        # End time ni datetime formatga o'zgartirish
+        try:
+            end_time = datetime.fromisoformat(end_time_str)
+        except ValueError:
+            return Response({"error": "Invalid end_time format. Use ISO format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Result obyektini yaratish
+        result = Result.objects.create(
+            student=student,
+            quiz=quiz,  # Oxirgi ishlangan testni saqlaymiz
+            science=science,
+            score=total_score,
+            total_questions=total_questions,
+            correct_answers=correct_answers,
+            attempt_number=attempt_number,
+            end_time=end_time
+        )
+        result.calculate_status()
+        result.calculate_test_time()
+
+        # Natijani qaytarish
+        response_data = {
+            "student": student.id,
+            "science": science.id,
+            "score": total_score,
+            "total_questions": total_questions,
+            "correct_answers": correct_answers,
+            "attempt_number": attempt_number,
+            "test_time": result.test_time,
         }
-
-        result_serializer = ResultSerializer(data=result_data)
-
-        if result_serializer.is_valid():
-            result_serializer.save()
-            return Response(result_serializer.data, status=201)
-
-        return Response(result_serializer.errors, status=400)
+        return Response(response_data, status=status.HTTP_201_CREATED)

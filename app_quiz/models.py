@@ -51,19 +51,21 @@ class Quiz(models.Model):
         db_table = 'Quiz'
 
 from django.core.exceptions import ValidationError
-from django.db import models
-from django.utils import timezone
+
+from django.utils.timezone import now
+from datetime import timedelta
 
 class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='results')
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='results')
-    science = models.ForeignKey(Science, on_delete=models.CASCADE, related_name='results')
-    score = models.PositiveIntegerField()
+    quiz = models.ForeignKey('Quiz', on_delete=models.CASCADE, related_name='results')
+    science = models.ForeignKey('Science', on_delete=models.CASCADE, related_name='results')
+    score = models.FloatField()
     total_questions = models.PositiveIntegerField()
     correct_answers = models.PositiveIntegerField()
-    attempt_number = models.PositiveIntegerField(default=1)  # Attempt number, initially 1
+    attempt_number = models.PositiveIntegerField(default=1)  # Urinishlar soni
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField()
+    test_time = models.CharField(max_length=50)  # Necha minut ishlagan vaqt sifatida saqlanadi
     status = models.CharField(
         max_length=20,
         choices=[
@@ -74,11 +76,18 @@ class Result(models.Model):
     )
 
     def calculate_status(self, passing_score=50):
-        """Calculate and update the status based on score"""
+        """Natija holatini hisoblash"""
         if self.score >= passing_score:
             self.status = 'passed'
         else:
             self.status = 'failed'
+        self.save()
+
+    def calculate_test_time(self):
+        """Boshlanish va tugash vaqtlaridan necha minut ishlaganini hisoblash"""
+        duration = self.end_time - self.start_time
+        minutes = duration.total_seconds() // 60
+        self.test_time = f"{int(minutes)} minutes"
         self.save()
 
     def __str__(self):

@@ -1,12 +1,53 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import StudentRegisterSerializer, VerifySmsCodeSerializer, LoginSerializer
+from .serializers import StudentRegisterSerializer, VerifySmsCodeSerializer, LoginSerializer, StudentProfileSerializer
 from .models import Student
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
 from datetime import timedelta
 from django.utils import timezone
+from rest_framework.exceptions import AuthenticationFailed
+import jwt
+from django.shortcuts import get_object_or_404
+
+
+
+class StudentProfileAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        token = request.META.get('HTTP_TOKEN')
+        
+        if not token:
+            raise AuthenticationFailed('Invalid token, login again, please')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token expired, login again, please')
+        
+        student_id = payload['student_id']
+
+        student = get_object_or_404(Student, id=student_id)
+    
+        data = {
+            'id': student.id,
+            'name': student.full_name,
+            'region': student.region
+        }
+        
+        return Response(data, status=200)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -6,6 +6,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 User = get_user_model()
 
+
+
+
+class StudentProfileSerializer(serializers.Serializer):
+    class Meta:
+        model  =  Student
+        fields = "__all__"
+
+
 class LoginSerializer(serializers.Serializer):
     phone = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
