@@ -5,7 +5,7 @@ def submit_quiz_result():
     url = "http://127.0.0.1:8000/api/v1/quiz/submit-quiz-result/"
 
     # Token
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2ODQyODkzLCJpYXQiOjE3MzY4MzU2OTMsImp0aSI6ImI4YmM5NTYwOGE0OTRmYTVhOTBlOWIwMDYwZTBiMjcwIiwidXNlcl9pZCI6Nywic3R1ZGVudF9pZCI6Mn0.OpNzwi9ABQwZ5I81QpsFY5NejXcwWazXgpBgv0JIn9k"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2OTI0NjYxLCJpYXQiOjE3MzY5MTc0NjEsImp0aSI6IjBkYWI5ODkwNTViNzQ2NjVhZDZlZDQzMGIyMDg0NDIzIiwidXNlcl9pZCI6Nywic3R1ZGVudF9pZCI6Mn0.8DgqFaaULyL8AlIdvKdqlK5ez7FTBNaB4zqBCCAp9lQ"
 
     # Authorization header
     headers = {

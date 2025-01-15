@@ -72,6 +72,12 @@ if __name__ == '__main__':
 }
 
 {
+  "phone": "998906762921",
+  "password": "uYRLLG5A"
+}
+
+
+{
     "student":1,
     "quiz_id": 1,
     "answers": [
