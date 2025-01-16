@@ -2,8 +2,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Science, Quiz, Result, Result_Telegram_Bot
-from .serializers import ScienceSerializer, QuizSerializer, ResultSerializer,Result_Telegram_Bot_Serializers, Quiz_Add_Serializers
-from app_customer.models import Student
+from .serializers import (
+    ScienceSerializer, QuizSerializer, ResultSerializer,Result_Telegram_Bot_Serializers, 
+    Quiz_Add_Serializers, Result_Telegram_Serializers )
+from app_customer.models import Student, User
 from rest_framework.permissions import IsAuthenticated
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
@@ -11,13 +13,88 @@ import random
 
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 
+from datetime import datetime
+import requests
+from django.shortcuts import get_object_or_404
 
 
 
 
-class Result_Telegram_Bot_CreateVIEW(CreateAPIView):
-    queryset = Result_Telegram_Bot.objects.all()
-    serializer_class  =  Result_Telegram_Bot_Serializers
+
+
+class Get_Student_Result_By_TelegramID(APIView):
+    def post(self, request, *args, **kwargs):
+        telegram_id = request.data.get('telegram_id')
+        
+        if not telegram_id:
+            return Response({"detail": "telegram_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+ 
+        try:
+            result_bot = Result_Telegram_Bot.objects.get(telegram_id=telegram_id)
+            phone = result_bot.phone
+        except Result_Telegram_Bot.DoesNotExist:
+            return Response("No Result_Telegram_Bot entry found for this telegram_id.")
+        
+        # Fetch the User with the given phone number
+        try:
+            user = User.objects.get(phone=phone)
+        except User.DoesNotExist:
+            return Response("User with this phone number not found.")
+        
+        # Fetch the Student associated with the User
+        try:
+            student = Student.objects.get(user=user)
+        except Student.DoesNotExist:
+            return Response("Student profile not found for this user.")
+        
+        # Fetch the latest result for this student
+        latest_result = Result.objects.filter(student=student).order_by('-id').first()
+        
+        if not latest_result:
+            return Response({"detail": "No results found for this student."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serialize and return the latest result
+        serializer = Result_Telegram_Serializers(latest_result)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+class Result_Telegram_Bot_CreateVIEW(APIView):
+    def post(self, request, *args, **kwargs):
+        phone = request.data.get('phone')
+        telegram_id = request.data.get('telegram_id')
+
+        # Check if the phone exists in the User model
+        try:
+            user = User.objects.get(phone=phone)
+
+        except User.DoesNotExist:
+            return Response("Telfon raqam topilmadi !!!", status=status.HTTP_404_NOT_FOUND)
+
+
+        result_bot = Result_Telegram_Bot.objects.create(phone=phone, telegram_id=telegram_id)
+        serializer = Result_Telegram_Bot_Serializers(result_bot)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class Result_Telegram_Bot_ListView(APIView):
+    def get(self, request):
+        telegram_id = request.GET.get("telegram_id")
+
+        if telegram_id:
+            try:
+                user = Result_Telegram_Bot.objects.get(telegram_id=telegram_id)
+                serializer = Result_Telegram_Bot_Serializers(user)
+                return Response({
+                    "result": "success",
+                    "data": serializer.data
+                })
+            except Result_Telegram_Bot.DoesNotExist:
+                return Response("User with the given Telegram ID not found.", status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "Telegram ID required."}, status=status.HTTP_400_BAD_REQUEST)
 
 class ScienceCreateAPIView(CreateAPIView):
     queryset = Science.objects.all()
@@ -63,7 +140,6 @@ class QuizListView(APIView):
         score_2_quizzes = Quiz.objects.filter(science_id=science_id, score=3.1)
         score_3_quizzes = Quiz.objects.filter(science_id=science_id, score=5.1)
 
-        # Randomly select quizzes based on the number required
         selected_score_1 = random.sample(list(score_1_quizzes), min(10, len(score_1_quizzes)))
         selected_score_2 = random.sample(list(score_2_quizzes), min(10, len(score_2_quizzes)))
         selected_score_3 = random.sample(list(score_3_quizzes), min(10, len(score_3_quizzes)))
@@ -76,43 +152,45 @@ class QuizListView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-from datetime import datetime
+
+
 
 class ResultCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        # Tokenni olish va tekshirish
         token_header = request.headers.get('Authorization', '')
         if not token_header or not token_header.startswith('Bearer '):
-            return Response({"error": "Authorization token missing or invalid"}, status=401)
+            return Response({"error": "Authorization token missing or invalid"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        token = token_header.split(' ')[1]  # 'Bearer' so'zini olib tashlab, faqat tokenni olish
+        token = token_header.split(' ')[1]
 
         try:
-            # Imzoni tekshirmasdan faqat payloadni olish
+            # Imzoni tekshirmasdan tokenni ochish
             decoded_token = jwt.decode(token, options={"verify_signature": False})
         except jwt.DecodeError:
-            return Response({"error": "Failed to decode token"}, status=401)
+            return Response({"error": "Failed to decode token"}, status=status.HTTP_401_UNAUTHORIZED)
 
+        # Studentni token orqali topish
         student_id = decoded_token.get('student_id')
         if not student_id:
             raise AuthenticationFailed("No student ID found in token")
 
-        try:
-            student = Student.objects.get(id=student_id)
-        except Student.DoesNotExist:
-            return Response({"error": "Student not found"}, status=404)
+        student = get_object_or_404(Student, id=student_id)
 
+        # Foydalanuvchi kiritgan ma'lumotlar
         data = request.data
         answers = data.get("answers", [])
         end_time_str = data.get("end_time")
 
-        # Savollar bo'yicha natijani hisoblash
+        # Natija hisoblash uchun o'zgaruvchilar
         total_questions = len(answers)
         correct_answers = 0
         total_score = 0
         science_set = set()
 
+        # Javoblarni qayta ishlash
         for answer in answers:
             quiz_id = answer.get("quiz_id")
             user_answer = answer.get("answer")
@@ -126,7 +204,7 @@ class ResultCreateAPIView(APIView):
             except Quiz.DoesNotExist:
                 return Response({"error": f"Quiz with id {quiz_id} not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Science ni aniqlash (bitta fandan test bo'lishi kerak)
+        # Fandagi savollarni tekshirish
         if len(science_set) != 1:
             return Response({"error": "All questions must belong to the same science"}, status=status.HTTP_400_BAD_REQUEST)
         science = science_set.pop()
@@ -134,16 +212,16 @@ class ResultCreateAPIView(APIView):
         # Urinishlar sonini aniqlash
         attempt_number = Result.objects.filter(student=student, science=science).count() + 1
 
-        # End time ni datetime formatga o'zgartirish
+        # End time formatini tekshirish
         try:
             end_time = datetime.fromisoformat(end_time_str)
         except ValueError:
             return Response({"error": "Invalid end_time format. Use ISO format"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Result obyektini yaratish
+        # Natija obyektini yaratish
         result = Result.objects.create(
             student=student,
-            quiz=quiz,  # Oxirgi ishlangan testni saqlaymiz
+            quiz=quiz,
             science=science,
             score=total_score,
             total_questions=total_questions,
@@ -154,7 +232,34 @@ class ResultCreateAPIView(APIView):
         result.calculate_status()
         result.calculate_test_time()
 
-        # Natijani qaytarish
+        # Telegram orqali xabar yuborish
+        phone = student.user.phone
+        result_bot = Result_Telegram_Bot.objects.filter(phone=phone).first()
+        if not result_bot:
+            return Response({"detail": "Telefon raqam topilmadi."}, status=status.HTTP_404_NOT_FOUND)
+
+        telegram_id = result_bot.telegram_id
+        message = (
+            f"🏅 Test natijalari:\n\n"
+            f"👤 O'quvchi: {student.full_name}\n"
+            f"🔬 Fan: {science.name}\n"
+            f"✅ To'g'ri javoblar: {correct_answers}/{total_questions}\n"
+            f"📊 Umumiy ball: {total_score}\n"
+            f"⏱️ Test vaqti: {result.test_time}\n"
+        )
+        BOT_TOKEN = "7826335243:AAGXTZvtzJ8e8g35Hrx_Swy7mwmRPd3T7Po"
+        TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        response = requests.post(
+            TELEGRAM_API_URL,
+            json={"chat_id": telegram_id, "text": message, "parse_mode": "HTML"}
+        )
+        if response.status_code != 200:
+            return Response(
+                {"detail": f"Telegram xatolik: {response.json()}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Muvaffaqiyatli javob qaytarish
         response_data = {
             "student": student.id,
             "science": science.id,

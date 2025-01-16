@@ -59,3 +59,28 @@ class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
         fields = ['student', 'quiz', 'science', 'score', 'total_questions', 'correct_answers', 'attempt_number', 'end_time']
+
+
+
+class Result_Telegram_Serializers(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    science = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Result
+        fields = [
+            "student",
+         
+            "science",
+            "score",
+            "total_questions",
+            "correct_answers",
+            "attempt_number",
+            "test_time",
+        ]
+
+    def get_student(self, obj):
+        return obj.student.full_name
+    
+    def get_science(self, obj):
+        return obj.science.name

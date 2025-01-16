@@ -2,7 +2,9 @@ from django.urls import path
 from .views import (
     ScienceListView, QuizListView, ResultCreateAPIView,
     ScienceCreateAPIView, ScienceUpdateAPIView, ScienceDestroyAPIView,
-    QuizCreateAPIView, Result_Telegram_Bot_CreateVIEW
+    QuizCreateAPIView, Result_Telegram_Bot_CreateVIEW, Result_Telegram_Bot_ListView, 
+    Get_Student_Result_By_TelegramID
+
 )
 
 urlpatterns = [
@@ -10,6 +12,8 @@ urlpatterns = [
 
 
     path('telegram_user/create/', Result_Telegram_Bot_CreateVIEW.as_view(), name='telegram_user'),
+    path('telegram_user/list/check/', Result_Telegram_Bot_ListView.as_view(), name='telegram_user'),
+    path('telegram_user/result/', Get_Student_Result_By_TelegramID.as_view(), name='telegram_user'),
 
 
     ############################ Science   #################################
