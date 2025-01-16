@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Science, Quiz, Result
-from .serializers import ScienceSerializer, QuizSerializer, ResultSerializer
+from .serializers import ScienceSerializer, QuizSerializer, ResultSerializer, Quiz_Add_Serializers
 from app_customer.models import Student
 from rest_framework.permissions import IsAuthenticated
 import jwt
@@ -38,7 +38,9 @@ class ScienceDestroyAPIView(DestroyAPIView):
 
 
 
-
+class QuizCreateAPIView(CreateAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = Quiz_Add_Serializers
 
 
 ##########################                               ScienceListView                  ####################################################################

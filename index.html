@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Quiz Result</title>
+</head>
+<body>
+    <h1>Submit Quiz Result</h1>
+
+    <form id="quiz-form">
+        <div>
+            <label for="quiz-id">Quiz ID:</label>
+            <input type="number" id="quiz-id" name="quiz-id" value="4" required>
+        </div>
+        <div>
+            <label for="answer">Answer:</label>
+            <select id="answer" name="answer" required>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+            </select>
+        </div>
+        <div>
+            <label for="end-time">End Time:</label>
+            <input type="datetime-local" id="end-time" name="end-time" value="2025-01-14T12:30:00" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('quiz-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const quizId = document.getElementById('quiz-id').value;
+            const answer = document.getElementById('answer').value;
+            const endTime = document.getElementById('end-time').value;
+
+            // Convert the end_time to the correct format (ISO format with timezone offset)
+            const formattedEndTime = new Date(endTime).toISOString().replace('Z', '+00:00');
+
+            const data = {
+                answers: [{ quiz_id: parseInt(quizId), answer: answer }],
+                end_time: formattedEndTime
+            };
+
+            fetch('https://jetmind.uz/api/v1/quiz/submit-quiz-result/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2OTQ0ODQ4LCJpYXQiOjE3MzY5Mzc2NDgsImp0aSI6IjJlZTRjZDEzZGRiMDQ1NWVhY2RjZWZhOTMxYTI4ZjdiIiwidXNlcl9pZCI6MTMsInN0dWRlbnRfaWQiOjExfQ.WKIppauG3UCUwceW8eu2YTmGIunkTfcNt9zBMozi2Zs'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Quiz result submitted successfully!');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error submitting quiz result.');
+            });
+        });
+    </script>
+</body>
+</html>

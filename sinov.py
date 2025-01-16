@@ -1,11 +1,15 @@
 import requests
+from datetime import datetime
+import pytz
 
+utc_time = datetime(2025, 1, 14, 12, 30, 0, tzinfo=pytz.UTC).isoformat()
+print(utc_time)
 def submit_quiz_result():
     # API endpoint
-    url = "http://127.0.0.1:8000/api/v1/quiz/submit-quiz-result/"
+    url = "https://jetmind.uz/api/v1/quiz/submit-quiz-result/"
 
     # Token
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2OTI0NjYxLCJpYXQiOjE3MzY5MTc0NjEsImp0aSI6IjBkYWI5ODkwNTViNzQ2NjVhZDZlZDQzMGIyMDg0NDIzIiwidXNlcl9pZCI6Nywic3R1ZGVudF9pZCI6Mn0.8DgqFaaULyL8AlIdvKdqlK5ez7FTBNaB4zqBCCAp9lQ"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2OTI0ODUyLCJpYXQiOjE3MzY5MTc2NTIsImp0aSI6IjIzNjg1YThkOTk2MzQ2ZmU4OGRlMmEyMDkwNjE2NDA1IiwidXNlcl9pZCI6MTMsInN0dWRlbnRfaWQiOjExfQ.OW2ZU83yOsW1teRvlvbt22tVV0GWVKRXHgc9W5Rp8F8"
 
     # Authorization header
     headers = {
@@ -16,11 +20,10 @@ def submit_quiz_result():
     # POST so‘rov ma'lumotlari
     data = {
         "answers": [
-            {"quiz_id": 1, "answer": "B"},
-            {"quiz_id": 2, "answer": "A"},
-            {"quiz_id": 3, "answer": "A"},
+
+            {"quiz_id": 7, "answer": "A"},
         ],
-        "end_time": "2025-01-14T12:30:00Z"
+        "end_time": "2025-01-14T12:30:00+00:00"
     }
 
     # POST so‘rov yuborish

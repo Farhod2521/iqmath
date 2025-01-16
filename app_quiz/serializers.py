@@ -21,7 +21,10 @@ class ScienceSerializer(serializers.ModelSerializer):
 
 
 
-
+class  Quiz_Add_Serializers(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = "__all__"
 
 
 
