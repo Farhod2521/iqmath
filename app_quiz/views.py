@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Science, Quiz, Result
-from .serializers import ScienceSerializer, QuizSerializer, ResultSerializer, Quiz_Add_Serializers
+from .models import Science, Quiz, Result, Result_Telegram_Bot
+from .serializers import ScienceSerializer, QuizSerializer, ResultSerializer,Result_Telegram_Bot_Serializers, Quiz_Add_Serializers
 from app_customer.models import Student
 from rest_framework.permissions import IsAuthenticated
 import jwt
@@ -15,8 +15,9 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 
 
 
-
-
+class Result_Telegram_Bot_CreateVIEW(CreateAPIView):
+    queryset = Result_Telegram_Bot.objects.all()
+    serializer_class  =  Result_Telegram_Bot_Serializers
 
 class ScienceCreateAPIView(CreateAPIView):
     queryset = Science.objects.all()

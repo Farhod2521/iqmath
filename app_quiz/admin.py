@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Science, Quiz, Result
+from .models import Science, Quiz, Result, Result_Telegram_Bot
+
+
+class Result_Telegram_Bot_Admin(admin.ModelAdmin):
+    list_display = ("phone", "telegram_id")
 
 
 class ScienceAdmin(admin.ModelAdmin):
@@ -29,3 +33,4 @@ class ResultAdmin(admin.ModelAdmin):
 admin.site.register(Science, ScienceAdmin)
 admin.site.register(Quiz, QuizAdmin)
 admin.site.register(Result, ResultAdmin)
+admin.site.register(Result_Telegram_Bot, Result_Telegram_Bot_Admin)

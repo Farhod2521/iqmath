@@ -1,14 +1,15 @@
 from django.urls import path
 from .views import (
     ScienceListView, QuizListView, ResultCreateAPIView,
-    ScienceCreateAPIView, ScienceUpdateAPIView, ScienceDestroyAPIView, QuizCreateAPIView
+    ScienceCreateAPIView, ScienceUpdateAPIView, ScienceDestroyAPIView,
+    QuizCreateAPIView, Result_Telegram_Bot_CreateVIEW
 )
 
 urlpatterns = [
 
 
 
-
+    path('telegram_user/create/', Result_Telegram_Bot_CreateVIEW.as_view(), name='telegram_user'),
 
 
     ############################ Science   #################################

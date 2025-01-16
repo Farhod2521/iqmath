@@ -98,3 +98,11 @@ class Result(models.Model):
         ordering = ['-score']
         verbose_name = 'Result'
         verbose_name_plural = 'Results'
+
+
+class Result_Telegram_Bot(models.Model):
+    phone = models.CharField(max_length=200)
+    telegram_id = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.phone

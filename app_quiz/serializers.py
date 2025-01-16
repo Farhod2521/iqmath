@@ -1,13 +1,21 @@
 from rest_framework import serializers
-from .models import Science, Quiz, Result
+from .models import Science, Quiz, Result, Result_Telegram_Bot 
 from app_customer.models import Student
 
 
 
 
 
-
-
+class Result_Telegram_Bot_Serializers(serializers.ModelSerializer):
+    class Meta:
+        model =  Result_Telegram_Bot
+        fields = "__all__"
+    
+    def validate_phone(self, phone):
+   
+        if Result_Telegram_Bot.objects.filter(phone=phone).exists():
+            raise serializers.ValidationError("Bu telefon raqam allaqachon ro'yxatdan o'tgan.")
+        return phone
 
 class ScienceSerializer(serializers.ModelSerializer):
     class Meta:
