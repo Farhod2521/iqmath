@@ -110,7 +110,7 @@ CORS_ALLOWED_ORIGINS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -260,7 +260,7 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Don't forget to run collectstatic when deploying to production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Change this path as needed
 
