@@ -329,16 +329,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
   <script>
 
-        document.getElementById('registrationForm').addEventListener('submit', function (e) {
+    document.getElementById('registrationForm').addEventListener('submit', function (e) {
         e.preventDefault(); // Formani jo'natishni to'xtatish
+
+        let phone = document.getElementById('registerPhone').value;
+        // Agar telefon raqam oldida '998' bo'lmasa, uni qo'shamiz
+        if (!phone.startsWith('998')) {
+            phone = '998' + phone.replace(/\s+/g, ''); // Bo'sh joylarni olib tashlash
+        }
 
         const formData = {
             full_name: document.getElementById('exampleInputtext').value,
             email: document.getElementById('Email').value,
-            phone: document.getElementById('registerPhone').value,
+            phone: phone, // To'g'irlangan telefon raqam
             region: document.getElementById('provinceSelect').selectedOptions[0].textContent, // name saqlash
             districts: document.getElementById('districtSelect').selectedOptions[0].textContent, // name saqlash
-      
             address: document.getElementById('Address').value,
             brithday: document.getElementById('birthday').value,
             academy_or_school: document.getElementById('educationSelect').value,
@@ -361,21 +366,21 @@
             })
             .then((data) => {
                 console.log('Success:', data);
-                // Muvaffaqiyatli bildirishnoma
-                localStorage.setItem('phone', formData.phone);
+                // Telefon raqamni localStorage'da saqlash
+                localStorage.setItem('phone', phone);
+                // Muvaffaqiyatli sahifaga o'tish
                 window.location.href = '/sms_code';
                 toastr.success('Ro\'yhatdan o\'tdingiz!', 'Muvaffaqiyat');
-                
             })
             .catch((error) => {
                 console.error('Error:', error);
                 // Xato bildirishnoma
                 if (typeof toastr !== "undefined") {
-                toastr.success("Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.", "Muvaffaqiyat");
-                    } else {
-                        console.error("Toastr.js yuklanmagan!");
-                        alert("Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.");
-                    }
+                    toastr.success("Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.", "Muvaffaqiyat");
+                } else {
+                    console.error("Toastr.js yuklanmagan!");
+                    alert("Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.");
+                }
             });
     });
 
