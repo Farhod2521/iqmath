@@ -156,6 +156,31 @@
         return charCode >= 48 && charCode <= 57;
     }
 
+    function startCountdown(duration, display) {
+        let timer = duration, minutes, seconds;
+        const interval = setInterval(() => {
+            minutes = Math.floor(timer / 60); // Daqiqalarni hisoblash
+            seconds = timer % 60; // Soniyalarni hisoblash
+
+            // Har doim 2 xonali ko'rinish uchun formatlash
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = `${minutes}:${seconds}`;
+
+            // Agar taymer nolga yetsa, to'xtatish
+            if (--timer < 0) {
+                clearInterval(interval); // Taymerni to'xtatish
+                alert("Taymer tugadi!");
+            }
+        }, 1000); // Har 1 soniyada yangilash
+    }
+
+    // HTML elementni topish va taymerni boshlash
+    const timerElement = document.getElementById('timer');
+    const countdownDuration = 2 * 60; // 2 daqiqa = 120 soniya
+    startCountdown(countdownDuration, timerElement);
+
     // Formni yuborish hodisasi
     document.getElementById('smsForm').addEventListener('submit', function (e) {
         e.preventDefault(); // Formani jo'natishni to'xtatish
