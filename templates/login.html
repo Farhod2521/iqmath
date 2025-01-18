@@ -66,27 +66,26 @@
                     <div class="row">
                     
                       <div class="col-md-12">
-                          <form>
+                        <form id="loginForm">
                             <div class="mb-3">
                                 <label for="loginPhone" class="form-label">Telefon raqam</label>
                                 <input type="text" class="form-control" maxlength="12" placeholder="91 581 21 09" id="loginPhone">
                             </div>
-                              <div class="mb-4">
+                            <div class="mb-4">
                                 <label for="exampleInputPassword1" class="form-label">Parol</label>
                                 <input type="password" class="form-control" id="exampleInputPassword1">
-                              </div>
-                              <div class="d-flex align-items-center justify-content-between mb-4">
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
                                 <div class="form-check">
-                                  <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
-                                  <label class="form-check-label text-dark" for="flexCheckChecked">
-                                    Eslab qolsin
-                                  </label>
+                                    <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
+                                    <label class="form-check-label text-dark" for="flexCheckChecked">
+                                        Eslab qolsin
+                                    </label>
                                 </div>
                                 <a class="text-primary fw-medium" href="../main/authentication-forgot-password.html">Parolni unitdingizmi ?</a>
-                              </div>
-                              <a href="../main/index.html" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Kirish</a>
-                    
-                            </form>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Kirish</button>
+                        </form>
                       </div>
                     </div>
                   </div>
@@ -324,6 +323,46 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
   <script>
 
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let phone = document.getElementById('loginPhone').value;
+    // Add '998' if the phone number doesn't start with it
+    if (!phone.startsWith('998')) {
+        phone = '998' + phone.replace(/\s+/g, ''); // Remove spaces
+    }
+    const password = document.getElementById("exampleInputPassword1").value;
+
+    const data = {
+        phone: phone,
+        password: password
+    };
+
+    fetch("https://jetmind.uz/api/v1/student/login/", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+})
+.then(response => response.json())
+.then(data => {
+    if (data.status === true) {
+    sessionStorage.setItem("access_token", data.access_token);
+    window.location.href = "/student_dashboard";
+} else {
+    alert("Login failed: " + (data.message || "Invalid credentials."));
+}
+})
+.catch(error => {
+    console.error("Error:", error);
+});
+});
+
+
+////////////////////////
+////////////////////// REGISTER
+////////////////////////
     document.getElementById('registrationForm').addEventListener('submit', function (e) {
         e.preventDefault(); // Formani jo'natishni to'xtatish
 
