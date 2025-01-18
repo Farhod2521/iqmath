@@ -107,7 +107,7 @@ class LoginAPIView(APIView):
                 "region": student.region,
                 "districts": student.districts,
                 "address": student.address,
-                "birthday": student.birthday,
+                "brithday": student.brithday,
                 "academy_or_school": student.academy_or_school,
                 "class_name": student.class_name,
                 "status": student.status,

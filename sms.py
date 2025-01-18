@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
 {
   "phone": "998915812109",
-  "password": "y668ANMm"
+  "password": "Tq#hvqsP"
 }
 
 
