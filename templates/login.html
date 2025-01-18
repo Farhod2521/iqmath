@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+{% load static  %}
+<html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon icon-->
+  <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/logos/favicon.png' %}" />
+
+  <!-- Core Css -->
+  <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" rel="stylesheet">
+  <title>Modernize Bootstrap Admin</title>
+</head>
+
+<body>
+  <!-- Preloader -->
+
+  <style>
+   
+    #phoneNumber {
+        width: 100% !important; 
+    }
+    .iti {
+        width: 100% !important; 
+    }
+</style>
+
+
+  <div class="preloader">
+    <img src="{% static 'assets/images/logos/favicon.png' %}" alt="loader" class="lds-ripple img-fluid" />
+  </div>
+  <div id="main-wrapper" class="auth-customizer-none">
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 w-100 d-flex align-items-center justify-content-center" style="background-image: url({% static 'assets/images/backgrounds/bacground.png' %});">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-3 auth-card">
+            <div class="card mb-0">
+              <div class="card-body">
+                <a href="../main/index.html" class="text-nowrap logo-img text-center d-block mb-5 w-100">
+                  <img src="{% static 'assets/images/logos/dark-logo.svg' %}" class="dark-logo" alt="Logo-Dark" />
+                  <img src="{% static 'assets/images/logos/light-logo.svg' %}" class="light-logo" alt="Logo-light" />
+                </a>
+        
+              
+                <ul class="nav nav-pills flex-column flex-sm-row mt-4" role="tablist">
+                    <li class="nav-item flex-sm-fill text-sm-center">
+                      <a class="nav-link active" data-bs-toggle="tab" href="#navpill-11" role="tab">
+                        <span>Kirish</span>
+                      </a>
+                    </li>
+               
+                    <li class="nav-item flex-sm-fill text-sm-center">
+                      <a class="nav-link" data-bs-toggle="tab" href="#navpill-33" role="tab">
+                        <span>Ro'yhatdan o'tish</span>
+                      </a>
+                    </li>
+                  </ul>
+
+                  <div class="tab-content border mt-2">
+                  <div class="tab-pane active p-3" id="navpill-11" role="tabpanel">
+                    <div class="row">
+                    
+                      <div class="col-md-12">
+                          <form>
+                            <div class="mb-3">
+                                <label for="loginPhone" class="form-label">Telefon raqam</label>
+                                <input type="text" class="form-control" maxlength="12" placeholder="91 581 21 09" id="loginPhone">
+                            </div>
+                              <div class="mb-4">
+                                <label for="exampleInputPassword1" class="form-label">Parol</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1">
+                              </div>
+                              <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="form-check">
+                                  <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
+                                  <label class="form-check-label text-dark" for="flexCheckChecked">
+                                    Eslab qolsin
+                                  </label>
+                                </div>
+                                <a class="text-primary fw-medium" href="../main/authentication-forgot-password.html">Parolni unitdingizmi ?</a>
+                              </div>
+                              <a href="../main/index.html" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Kirish</a>
+                    
+                            </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane p-3" id="navpill-33" role="tabpanel">
+                    <div class="row">
+                  
+                      <div class="col-md-12">
+                        <form id="registrationForm">
+                            <div class="mb-3">
+                              <label for="exampleInputEmail1" class="form-label">F.I.SH</label>
+                              <input type="text" class="form-control" id="exampleInputtext" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="Email" class="form-label">Email</label>
+                              <input type="email" class="form-control" id="Email" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="registerPhone" class="form-label">Telefon raqam</label>
+                              <input type="text" class="form-control" maxlength="12" placeholder="91 581 21 09" id="registerPhone" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="birthday" class="form-label">Tug'ilgan kun</label>
+                              <input type="date" class="form-control" id="birthday" min="2005-01-01" max="2010-12-31" required>
+                            </div>
+                          
+                            <div class="mb-3">
+                              <label for="Viloyat" class="form-label">Viloyat</label>
+                              <select class="form-select" id="provinceSelect" aria-label="Viloyat tanlang" required>
+                                <option selected disabled>Viloyatni tanlang</option>
+                                <option value="Toshkent">Toshkent</option>
+                                <option value="Samarqand">Samarqand</option>
+                                <!-- Viloyatlar bo'sh joyga kiritiladi -->
+                              </select>
+                            </div>
+                          
+                            <div class="mb-3">
+                              <label for="Tuman" class="form-label">Tuman</label>
+                              <select class="form-select" id="districtSelect" aria-label="Tuman tanlang" required>
+                                <option selected disabled>Tumanni tanlang</option>
+                                <option value="chilzonr">Chilonzor</option>
+                                <option value="yakkasaray">Yakkasaray</option>
+                                <!-- Tumanni bo'sh joyga kiritiladi -->
+                              </select>
+                            </div>
+                            <div class="mb-3">
+                              <label for="Address" class="form-label">Manzil</label>
+                              <input type="text" class="form-control" id="Address" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="maktab_or" class="form-label">Ta'lim dargohi</label>
+                              <select class="form-select" id="educationSelect" required>
+                                <option selected disabled>Ta'lim dargohi tanlang</option>
+                                <option value="litsey">Litsey</option>
+                                <option value="maktab">Maktab</option>
+                              </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                              <label for="courseSelect" class="form-label">Kurs tanlang</label>
+                              <select class="form-select" id="courseSelect" required>
+                                <option selected disabled>Kursni tanlang</option>
+                                <option value="10-A">10-A</option>
+                                <option value="10-B">10-B</option>
+                                <!-- Kurslar bo'sh joyga kiritiladi -->
+                              </select>
+                            </div>
+                          
+                            <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2"   id="ts-success">Ro'yhatdan o'tish</button>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+
+                  <div id="toast-bottom-full-width" class="toast-container toastr toast-bottom-full-width"  ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+  function handleColorTheme(e) {
+    document.documentElement.setAttribute("data-color-theme", e);
+  }
+</script>
+    <button class="btn btn-primary p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+      <i class="icon ti ti-settings fs-7"></i>
+    </button>
+
+    <div class="offcanvas customizer offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+      <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+        <h4 class="offcanvas-title fw-semibold" id="offcanvasExampleLabel">
+          Settings
+        </h4>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body h-n80" data-simplebar>
+        <h6 class="fw-semibold fs-4 mb-2">Theme</h6>
+
+        <div class="d-flex flex-row gap-3 customizer-box" role="group">
+          <input type="radio" class="btn-check light-layout" name="theme-layout" id="light-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary rounded-2" for="light-layout">
+            <i class="icon ti ti-brightness-up fs-7 me-2"></i>Light
+          </label>
+
+          <input type="radio" class="btn-check dark-layout" name="theme-layout" id="dark-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary rounded-2" for="dark-layout">
+            <i class="icon ti ti-moon fs-7 me-2"></i>Dark
+          </label>
+        </div>
+
+        <h6 class="mt-5 fw-semibold fs-4 mb-2">Theme Direction</h6>
+        <div class="d-flex flex-row gap-3 customizer-box" role="group">
+          <input type="radio" class="btn-check" name="direction-l" id="ltr-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary" for="ltr-layout">
+            <i class="icon ti ti-text-direction-ltr fs-7 me-2"></i>LTR
+          </label>
+
+          <input type="radio" class="btn-check" name="direction-l" id="rtl-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary" for="rtl-layout">
+            <i class="icon ti ti-text-direction-rtl fs-7 me-2"></i>RTL
+          </label>
+        </div>
+
+        <h6 class="mt-5 fw-semibold fs-4 mb-2">Theme Colors</h6>
+
+        <div class="d-flex flex-row flex-wrap gap-3 customizer-box color-pallete" role="group">
+          <input type="radio" class="btn-check" name="color-theme-layout" id="Blue_Theme" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Blue_Theme')" for="Blue_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="BLUE_THEME">
+            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-1">
+              <i class="ti ti-check text-white d-flex icon fs-5"></i>
+            </div>
+          </label>
+
+          <input type="radio" class="btn-check" name="color-theme-layout" id="Aqua_Theme" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Aqua_Theme')" for="Aqua_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="AQUA_THEME">
+            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-2">
+              <i class="ti ti-check text-white d-flex icon fs-5"></i>
+            </div>
+          </label>
+
+          <input type="radio" class="btn-check" name="color-theme-layout" id="Purple_Theme" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Purple_Theme')" for="Purple_Theme" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PURPLE_THEME">
+            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-3">
+              <i class="ti ti-check text-white d-flex icon fs-5"></i>
+            </div>
+          </label>
+
+          <input type="radio" class="btn-check" name="color-theme-layout" id="green-theme-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Green_Theme')" for="green-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="GREEN_THEME">
+            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-4">
+              <i class="ti ti-check text-white d-flex icon fs-5"></i>
+            </div>
+          </label>
+
+          <input type="radio" class="btn-check" name="color-theme-layout" id="cyan-theme-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Cyan_Theme')" for="cyan-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="CYAN_THEME">
+            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-5">
+              <i class="ti ti-check text-white d-flex icon fs-5"></i>
+            </div>
+          </label>
+
+          <input type="radio" class="btn-check" name="color-theme-layout" id="orange-theme-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary d-flex align-items-center justify-content-center" onclick="handleColorTheme('Orange_Theme')" for="orange-theme-layout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="ORANGE_THEME">
+            <div class="color-box rounded-circle d-flex align-items-center justify-content-center skin-6">
+              <i class="ti ti-check text-white d-flex icon fs-5"></i>
+            </div>
+          </label>
+        </div>
+
+        <h6 class="mt-5 fw-semibold fs-4 mb-2">Layout Type</h6>
+        <div class="d-flex flex-row gap-3 customizer-box" role="group">
+          <div>
+            <input type="radio" class="btn-check" name="page-layout" id="vertical-layout" autocomplete="off" />
+            <label class="btn p-9 btn-outline-primary" for="vertical-layout">
+              <i class="icon ti ti-layout-sidebar-right fs-7 me-2"></i>Vertical
+            </label>
+          </div>
+          <div>
+            <input type="radio" class="btn-check" name="page-layout" id="horizontal-layout" autocomplete="off" />
+            <label class="btn p-9 btn-outline-primary" for="horizontal-layout">
+              <i class="icon ti ti-layout-navbar fs-7 me-2"></i>Horizontal
+            </label>
+          </div>
+        </div>
+
+        <h6 class="mt-5 fw-semibold fs-4 mb-2">Container Option</h6>
+
+        <div class="d-flex flex-row gap-3 customizer-box" role="group">
+          <input type="radio" class="btn-check" name="layout" id="boxed-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary" for="boxed-layout">
+            <i class="icon ti ti-layout-distribute-vertical fs-7 me-2"></i>Boxed
+          </label>
+
+          <input type="radio" class="btn-check" name="layout" id="full-layout" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary" for="full-layout">
+            <i class="icon ti ti-layout-distribute-horizontal fs-7 me-2"></i>Full
+          </label>
+        </div>
+
+        <h6 class="fw-semibold fs-4 mb-2 mt-5">Sidebar Type</h6>
+        <div class="d-flex flex-row gap-3 customizer-box" role="group">
+          <a href="javascript:void(0)" class="fullsidebar">
+            <input type="radio" class="btn-check" name="sidebar-type" id="full-sidebar" autocomplete="off" />
+            <label class="btn p-9 btn-outline-primary" for="full-sidebar">
+              <i class="icon ti ti-layout-sidebar-right fs-7 me-2"></i>Full
+            </label>
+          </a>
+          <div>
+            <input type="radio" class="btn-check " name="sidebar-type" id="mini-sidebar" autocomplete="off" />
+            <label class="btn p-9 btn-outline-primary" for="mini-sidebar">
+              <i class="icon ti ti-layout-sidebar fs-7 me-2"></i>Collapse
+            </label>
+          </div>
+        </div>
+
+        <h6 class="mt-5 fw-semibold fs-4 mb-2">Card With</h6>
+
+        <div class="d-flex flex-row gap-3 customizer-box" role="group">
+          <input type="radio" class="btn-check" name="card-layout" id="card-with-border" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary" for="card-with-border">
+            <i class="icon ti ti-border-outer fs-7 me-2"></i>Border
+          </label>
+
+          <input type="radio" class="btn-check" name="card-layout" id="card-without-border" autocomplete="off" />
+          <label class="btn p-9 btn-outline-primary" for="card-without-border">
+            <i class="icon ti ti-border-none fs-7 me-2"></i>Shadow
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dark-transparent sidebartoggler"></div>
+  <!-- Import Js Files -->
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+  <script>
+
+        document.getElementById('registrationForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Formani jo'natishni to'xtatish
+
+        const formData = {
+            full_name: document.getElementById('exampleInputtext').value,
+            email: document.getElementById('Email').value,
+            phone: document.getElementById('registerPhone').value,
+            region: document.getElementById('provinceSelect').value,
+            districts: document.getElementById('districtSelect').value,
+            address: document.getElementById('Address').value,
+            brithday: document.getElementById('birthday').value,
+            academy_or_school: document.getElementById('educationSelect').value,
+            class_name: document.getElementById('courseSelect').value
+        };
+
+        // Serverga so'rov yuborish
+        fetch('https://jetmind.uz/api/v1/student/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Serverda xatolik yuz berdi.');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Success:', data);
+                // Muvaffaqiyatli bildirishnoma
+                toastr.success('Ro\'yhatdan o\'tdingiz!', 'Muvaffaqiyat');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Xato bildirishnoma
+                if (typeof toastr !== "undefined") {
+                toastr.success("Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.", "Muvaffaqiyat");
+                    } else {
+                        console.error("Toastr.js yuklanmagan!");
+                        alert("Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.");
+                    }
+            });
+    });
+
+
+
+    ///////////////////////////
+    //////////////////////////  KURSNI TANLANG 
+    /////////////////////////
+    document.getElementById('educationSelect').addEventListener('change', function(event) {
+        const selectedValue = event.target.value;
+        const courseSelect = document.getElementById('courseSelect');
+
+        courseSelect.innerHTML = '<option selected disabled>Kursni tanlang</option>';
+        
+        courseSelect.disabled = false;
+        if (selectedValue === 'litsey') {
+            // Litsey uchun kurslar
+            const litseyCourses = ['1-kurs', '2-kurs', '3-kurs'];
+            litseyCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseSelect.appendChild(option);
+            });
+        } else if (selectedValue === 'maktab') {
+            // Maktab uchun kurslar
+            const maktabCourses = ['10-sinf', '11-sinf'];
+            maktabCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseSelect.appendChild(option);
+            });
+        }
+    });
+   ///
+   ///       VILOYAT TUMAN 
+   ///
+    fetch('{% static "assets/js/viloyat_tuman.json" %}')
+        .then(response => response.json())
+        .then(data => {
+            // Populate the province dropdown
+            const provinceSelect = document.getElementById('provinceSelect');
+            data.regions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region.id;
+                option.textContent = region.name;
+                provinceSelect.appendChild(option);
+            });
+
+            // Add event listener to update district options when a province is selected
+            provinceSelect.addEventListener('change', (event) => {
+                const selectedRegionId = event.target.value;
+                const districtSelect = document.getElementById('districtSelect');
+
+                // Clear previous district options
+                districtSelect.innerHTML = '<option selected disabled>Tumanni tanlang</option>';
+
+                // Populate the district dropdown based on the selected province
+                data.districts.forEach(district => {
+                    if (district.region_id == selectedRegionId) {
+                        const option = document.createElement('option');
+                        option.value = district.id;
+                        option.textContent = district.name;
+                        districtSelect.appendChild(option);
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching the viloyat_tuman.json:', error);
+        });
+
+
+
+
+
+
+
+
+
+
+
+    // Ro'yhatdan o'tish uchun telefon raqam inputini o'rnatish
+    const registerPhoneInput = document.querySelector("#registerPhone");
+    const registerIti = intlTelInput(registerPhoneInput, {
+        initialCountry: "uz", // O'zbekistonni standart sifatida o'rnatadi
+        onlyCountries: ["uz"], // Faqat O'zbekistonni ko'rsatadi
+        separateDialCode: true, // +998 alohida ko'rinadi
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Formatlash uchun kerak
+    });
+
+    // Login uchun telefon raqam inputini o'rnatish
+    const loginPhoneInput = document.querySelector("#loginPhone");
+    const loginIti = intlTelInput(loginPhoneInput, {
+        initialCountry: "uz", // O'zbekistonni standart sifatida o'rnatadi
+        onlyCountries: ["uz"], // Faqat O'zbekistonni ko'rsatadi
+        separateDialCode: true, // +998 alohida ko'rinadi
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Formatlash uchun kerak
+    });
+
+    // Telefon raqamni formatlash
+    function formatPhoneInput(input) {
+        input.addEventListener("input", function (e) {
+            let value = e.target.value.replace(/\D/g, ""); // Faqat raqamlarni oladi
+            if (value.length > 9) value = value.slice(0, 9); // Maksimal 9 raqamga ruxsat beradi
+
+            // Raqamni formatlash
+            const formattedValue = value
+                .replace(/(\d{2})(\d{3})?(\d{2})?(\d{2})?/, (match, p1, p2, p3, p4) => {
+                    return [p1, p2, p3, p4].filter(Boolean).join(" ");
+                });
+
+            e.target.value = formattedValue; // Formatlangan qiymatni inputga o'rnatadi
+        });
+    }
+
+    // Formatlashni har ikkala input uchun qo'llash
+    formatPhoneInput(registerPhoneInput);
+    formatPhoneInput(loginPhoneInput);
+</script>
+  <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
+  <script src="{% static 'assets/libs/simplebar/dist/simplebar.min.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/app.init.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/theme.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/app.min.js'  %}"></script>
+
+  <!-- solar icons -->
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+  <script src="{% static 'assets/js/plugins/toastr-init.js' %}"></script>
+</body>
+
+</html>

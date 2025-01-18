@@ -1,68 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Quiz Result</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMS Code Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .timer {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff5555;
+      margin-bottom: 20px;
+    }
+    .code-inputs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .code-inputs input {
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .code-inputs input:focus {
+      border-color: #007bff;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
-    <h1>Submit Quiz Result</h1>
-
-    <form id="quiz-form">
-        <div>
-            <label for="quiz-id">Quiz ID:</label>
-            <input type="number" id="quiz-id" name="quiz-id" value="4" required>
-        </div>
-        <div>
-            <label for="answer">Answer:</label>
-            <select id="answer" name="answer" required>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-            </select>
-        </div>
-        <div>
-            <label for="end-time">End Time:</label>
-            <input type="datetime-local" id="end-time" name="end-time" value="2025-01-14T12:30:00" required>
-        </div>
-        <button type="submit">Submit</button>
+  <div class="container">
+    <div class="timer" id="timer">02:00</div>
+    <form id="smsForm">
+      <label for="smsCode" class="form-label">SMS Kodni Kiriting</label>
+      <div class="code-inputs">
+        <input type="text" maxlength="1" id="digit1" oninput="moveToNext(this, 'digit2')">
+        <input type="text" maxlength="1" id="digit2" oninput="moveToNext(this, 'digit3')">
+        <input type="text" maxlength="1" id="digit3" oninput="moveToNext(this, 'digit4')">
+        <input type="text" maxlength="1" id="digit4" oninput="moveToNext(this, 'digit5')">
+        <input type="text" maxlength="1" id="digit5">
+      </div>
+      <button type="submit" class="btn-primary">Tasdiqlash</button>
     </form>
+  </div>
 
-    <script>
-        document.getElementById('quiz-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+  <script>
+    // Countdown timer
+    let countdown = 120; // 2 minutes
+    const timerElement = document.getElementById('timer');
 
-            const quizId = document.getElementById('quiz-id').value;
-            const answer = document.getElementById('answer').value;
-            const endTime = document.getElementById('end-time').value;
+    function updateTimer() {
+      const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
+      const seconds = String(countdown % 60).padStart(2, '0');
+      timerElement.textContent = `${minutes}:${seconds}`;
+      if (countdown > 0) {
+        countdown--;
+      } else {
+        clearInterval(timerInterval);
+        alert('Vaqt tugadi!');
+      }
+    }
+    const timerInterval = setInterval(updateTimer, 1000);
 
-            // Convert the end_time to the correct format (ISO format with timezone offset)
-            const formattedEndTime = new Date(endTime).toISOString().replace('Z', '+00:00');
+    // Automatically move to the next input field
+    function moveToNext(current, nextId) {
+      if (current.value.length === 1 && nextId) {
+        document.getElementById(nextId).focus();
+      }
+    }
 
-            const data = {
-                answers: [{ quiz_id: parseInt(quizId), answer: answer }],
-                end_time: formattedEndTime
-            };
-
-            fetch('https://jetmind.uz/api/v1/quiz/submit-quiz-result/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2OTQ0ODQ4LCJpYXQiOjE3MzY5Mzc2NDgsImp0aSI6IjJlZTRjZDEzZGRiMDQ1NWVhY2RjZWZhOTMxYTI4ZjdiIiwidXNlcl9pZCI6MTMsInN0dWRlbnRfaWQiOjExfQ.WKIppauG3UCUwceW8eu2YTmGIunkTfcNt9zBMozi2Zs'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('Quiz result submitted successfully!');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Error submitting quiz result.');
-            });
-        });
-    </script>
+    // Form submission handling
+    document.getElementById('smsForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const smsCode = Array.from(document.querySelectorAll('.code-inputs input'))
+        .map(input => input.value)
+        .join('');
+      if (smsCode.length === 5) {
+        alert(`SMS kod: ${smsCode}`);
+      } else {
+        alert('5 xonali kodni to‘liq kiriting!');
+      }
+    });
+  </script>
 </body>
 </html>

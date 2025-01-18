@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+{% load static  %}
+<html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon icon-->
+  <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/logos/favicon.png' %}" />
+
+  <!-- Core Css -->
+  <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" rel="stylesheet">
+  <title>Modernize Bootstrap Admin</title>
+</head>
+
+<body>
+  <!-- Preloader -->
+
+  <style>
+       .timer {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff5555;
+      margin-bottom: 20px;
+    }
+    .code-inputs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .code-inputs input {
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .code-inputs input:focus {
+      border-color: #007bff;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 15px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+    #phoneNumber {
+        width: 100% !important; 
+    }
+    .iti {
+        width: 100% !important; 
+    }
+</style>
+
+
+  <div class="preloader">
+    <img src="{% static 'assets/images/logos/favicon.png' %}" alt="loader" class="lds-ripple img-fluid" />
+  </div>
+  <div id="main-wrapper" class="auth-customizer-none">
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 w-100 d-flex align-items-center justify-content-center" style="background-image: url({% static 'assets/images/backgrounds/bacground.png' %});">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-3 auth-card">
+            <div class="card mb-0">
+              <div class="card-body">
+                <a href="../main/index.html" class="text-nowrap logo-img text-center d-block mb-5 w-100">
+                  <img src="{% static 'assets/images/logos/dark-logo.svg' %}" class="dark-logo" alt="Logo-Dark" />
+                  <img src="{% static 'assets/images/logos/light-logo.svg' %}" class="light-logo" alt="Logo-light" />
+                </a>
+        
+              <div style="text-align: center;"><label for="smsCode" class="form-label" >SMS Kodni Kiriting</label></div>
+                
+
+                  <div class="tab-content border mt-2">
+                    
+                  <div class="tab-pane active p-3" id="navpill-11" role="tabpanel">
+                    
+                    <div class="row">
+                    
+                      <div class="col-md-12">
+                 
+                        <form id="smsForm">
+                          
+                   
+                          <div class="code-inputs">
+                            <input type="text" maxlength="1" id="digit1" oninput="moveToNext(this, 'digit2')">
+                            <input type="text" maxlength="1" id="digit2" oninput="moveToNext(this, 'digit3')">
+                            <input type="text" maxlength="1" id="digit3" oninput="moveToNext(this, 'digit4')">
+                            <input type="text" maxlength="1" id="digit4" oninput="moveToNext(this, 'digit5')">
+                            <input type="text" maxlength="1" id="digit5">
+                          </div>
+                          <div class="position-relative text-center my-4">
+                            <p class="mb-0 fs-4 px-3 d-inline-block bg-white z-index-5 position-relative" id="timer">02:00</p>
+                            <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
+                          </div>
+                          <button type="submit" class="btn-primary">Tasdiqlash</button>
+                        </form>
+            
+                      </div>
+                    </div>
+                  </div>
+            
+                  </div>
+
+                  <div id="toast-bottom-full-width" class="toast-container toastr toast-bottom-full-width"  ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+  function handleColorTheme(e) {
+    document.documentElement.setAttribute("data-color-theme", e);
+  }
+</script>
+    <button class="btn btn-primary p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+      <i class="icon ti ti-settings fs-7"></i>
+    </button>
+
+
+  </div>
+  <div class="dark-transparent sidebartoggler"></div>
+  <!-- Import Js Files -->
+
+
+
+
+  <script>
+    let countdown = 120; // 2 minutes
+    const timerElement = document.getElementById('timer');
+
+    function updateTimer() {
+      const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
+      const seconds = String(countdown % 60).padStart(2, '0');
+      timerElement.textContent = `${minutes}:${seconds}`;
+      if (countdown > 0) {
+        countdown--;
+      } else {
+        clearInterval(timerInterval);
+        alert('Vaqt tugadi!');
+      }
+    }
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Automatically move to the next input field
+    function moveToNext(current, nextId) {
+      if (current.value.length === 1 && nextId) {
+        document.getElementById(nextId).focus();
+      }
+    }
+
+    // Form submission handling
+    document.getElementById('smsForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const smsCode = Array.from(document.querySelectorAll('.code-inputs input'))
+        .map(input => input.value)
+        .join('');
+      if (smsCode.length === 5) {
+        alert(`SMS kod: ${smsCode}`);
+      } else {
+        alert('5 xonali kodni to‘liq kiriting!');
+      }
+    });
+</script>
+  <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
+  <script src="{% static 'assets/libs/simplebar/dist/simplebar.min.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/app.init.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/theme.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/app.min.js'  %}"></script>
+
+  <!-- solar icons -->
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+  <script src="{% static 'assets/js/plugins/toastr-init.js' %}"></script>
+</body>
+
+</html>

@@ -132,7 +132,7 @@ class ScienceListView(APIView):
 
 
 class QuizListView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, science_id):
         # Get quizzes based on the science_id

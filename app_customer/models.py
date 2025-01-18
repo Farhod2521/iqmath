@@ -30,7 +30,7 @@ class Student(models.Model):
     districts = models.CharField(max_length=200)
     address = models.CharField(max_length=500)
     brithday = models.CharField(max_length=20)
-    academy_or_school = models.CharField(max_length=20, choices=ACADEMY_OR_SCHOOL)
+    academy_or_school = models.CharField(max_length=200)
     class_name = models.CharField(max_length=20)
     status = models.BooleanField(default=False)
 
