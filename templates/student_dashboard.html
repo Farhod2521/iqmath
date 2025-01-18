@@ -53,7 +53,7 @@ window.onload = function() {
         return;
     }
 
-    // Tokenning yaroqlilik muddati
+    // expires_in ni millisekundaga aylantirish va tokenning yaroqlilik muddati
     const tokenExpirationTime = new Date(Number(expiresIn) * 1000); // expires_in qiymatini timestampga aylantirish
     const currentTime = new Date(); // Joriy vaqt
 
@@ -71,9 +71,13 @@ window.onload = function() {
         // Agar token hali yaroqli bo'lsa, sahifani ko'rsatish
         console.log('Token yaroqli:', accessToken);
     }
+
+    // Sayt ochilganda modalni avtomatik ko'rsatish
+    showCredentialsInModal();
 };
-  // Modalga login va parolni chiqarish
-  function showCredentialsInModal() {
+
+// Modalga login va parolni chiqarish
+function showCredentialsInModal() {
     // LocalStorage'dan login va parolni olish
     const login = localStorage.getItem('login');
     const password = localStorage.getItem('password');
@@ -94,30 +98,26 @@ window.onload = function() {
     // Modal oynasini ko'rsatish
     const modal = new bootstrap.Modal(document.getElementById('dark-header-modal'));
     modal.show();
-  }
+}
 
-  // Parolni nusxalash funksiyasi
-  function copyPassword() {
+// Parolni nusxalash funksiyasi
+function copyPassword() {
     const passwordInput = document.getElementById('exampleInputText2');
     passwordInput.select();
     passwordInput.setSelectionRange(0, 99999); // Ko‘rsatilgan qiymatni to‘liq tanlash
     navigator.clipboard.writeText(passwordInput.value)
         .then(() => alert("Parol nusxalandi!"))
         .catch(err => alert("Nusxalashda xatolik yuz berdi: " + err));
-  }
+}
 
-  // Sayt ochilganda modalni avtomatik ko'rsatish
-  window.onload = function() {
-    showCredentialsInModal();
-  };
-
-  // LocalStorage'dan login va parolni o'chirish
-  function clearLocalStorage() {
+// LocalStorage'dan login va parolni o'chirish
+function clearLocalStorage() {
     // LocalStorage'dan login va parolni o'chirish
     localStorage.removeItem('login');
     localStorage.removeItem('password');
     console.log('Login va parol o\'chirildi.');
-  }
+}
+
 </script>
 
 
