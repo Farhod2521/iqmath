@@ -96,20 +96,18 @@
                       <div class="col-md-12">
                  
                         <form id="smsForm">
-                          
-                   
-                          <div class="code-inputs">
-                            <input type="text" maxlength="1" id="digit1" oninput="moveToNext(this, 'digit2')">
-                            <input type="text" maxlength="1" id="digit2" oninput="moveToNext(this, 'digit3')">
-                            <input type="text" maxlength="1" id="digit3" oninput="moveToNext(this, 'digit4')">
-                            <input type="text" maxlength="1" id="digit4" oninput="moveToNext(this, 'digit5')">
-                            <input type="text" maxlength="1" id="digit5">
-                          </div>
-                          <div class="position-relative text-center my-4">
-                            <p class="mb-0 fs-4 px-3 d-inline-block bg-white z-index-5 position-relative" id="timer">02:00</p>
-                            <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
-                          </div>
-                          <button type="submit" class="btn-primary">Tasdiqlash</button>
+                            <div class="code-inputs">
+                                <input type="text" maxlength="1" id="digit1" oninput="moveToNext(this, 'digit2')" onkeypress="return isNumberKey(event)">
+                                <input type="text" maxlength="1" id="digit2" oninput="moveToNext(this, 'digit3')" onkeypress="return isNumberKey(event)">
+                                <input type="text" maxlength="1" id="digit3" oninput="moveToNext(this, 'digit4')" onkeypress="return isNumberKey(event)">
+                                <input type="text" maxlength="1" id="digit4" oninput="moveToNext(this, 'digit5')" onkeypress="return isNumberKey(event)">
+                                <input type="text" maxlength="1" id="digit5" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div class="position-relative text-center my-4">
+                                <p class="mb-0 fs-4 px-3 d-inline-block bg-white z-index-5 position-relative" id="timer">02:00</p>
+                                <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
+                            </div>
+                            <button type="submit" class="btn-primary">Tasdiqlash</button>
                         </form>
             
                       </div>
@@ -141,42 +139,73 @@
 
 
 
-
   <script>
-    let countdown = 120; // 2 minutes
-    const timerElement = document.getElementById('timer');
-
-    function updateTimer() {
-      const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
-      const seconds = String(countdown % 60).padStart(2, '0');
-      timerElement.textContent = `${minutes}:${seconds}`;
-      if (countdown > 0) {
-        countdown--;
-      } else {
-        clearInterval(timerInterval);
-        alert('Vaqt tugadi!');
-      }
-    }
-    const timerInterval = setInterval(updateTimer, 1000);
-
-    // Automatically move to the next input field
-    function moveToNext(current, nextId) {
-      if (current.value.length === 1 && nextId) {
-        document.getElementById(nextId).focus();
-      }
+    // Keyingi inputga o'tish
+    function moveToNext(current, nextFieldId) {
+        if (current.value.length === current.maxLength) {
+            const nextField = document.getElementById(nextFieldId);
+            if (nextField) {
+                nextField.focus();
+            }
+        }
     }
 
-    // Form submission handling
-    document.getElementById('smsForm').addEventListener('submit', (event) => {
-      event.preventDefault();
-      const smsCode = Array.from(document.querySelectorAll('.code-inputs input'))
-        .map(input => input.value)
-        .join('');
-      if (smsCode.length === 5) {
-        alert(`SMS kod: ${smsCode}`);
-      } else {
-        alert('5 xonali kodni to‘liq kiriting!');
-      }
+    // Faqat raqamlarni kiritishga ruxsat berish
+    function isNumberKey(event) {
+        const charCode = event.which || event.keyCode;
+        return charCode >= 48 && charCode <= 57;
+    }
+
+    // Formni yuborish hodisasi
+    document.getElementById('smsForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Formani jo'natishni to'xtatish
+
+        // Kiritilgan SMS kodni yig'ish
+        const smsCode = 
+            document.getElementById('digit1').value +
+            document.getElementById('digit2').value +
+            document.getElementById('digit3').value +
+            document.getElementById('digit4').value +
+            document.getElementById('digit5').value;
+
+        // LocalStorage'dan telefon raqamni olish
+        const phone = localStorage.getItem('phone');
+
+        if (!phone || smsCode.length !== 5) {
+            alert("Telefon raqam yoki SMS kod noto'g'ri.");
+            return;
+        }
+
+        // API uchun ma'lumotni tayyorlash
+        const requestData = {
+            phone: phone,
+            sms_code: smsCode
+        };
+
+        // APIga POST so'rov yuborish
+        fetch('https://jetmind.uz/api/v1/student/verify-sms/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Serverda xatolik yuz berdi.');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Success:', data);
+                // Muvaffaqiyatli javobni alert orqali ko'rsatish
+                alert('Muvaffaqiyatli tasdiqlandi: ' + JSON.stringify(data));
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Xato javobni alert orqali ko'rsatish
+                alert('Xatolik yuz berdi: ' + error.message);
+            });
     });
 </script>
   <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>

@@ -69,8 +69,8 @@ class StudentRegisterSerializer(serializers.Serializer):
         user = User.objects.create(phone=phone, email=validated_data['email'], role='student')
 
         # Generate SMS code
-        #sms_code = str(random.randint(100000, 999999))  # 6-digit code
-        sms_code = str(000000)  # 6-digit code
+        #sms_code = str(random.randint(10000, 99999))  # 6-digit code
+        sms_code = str(12345)  # 5-digit code
         user.sms_code = sms_code
         user.set_unusable_password()  # Password is not set yet
         user.save()

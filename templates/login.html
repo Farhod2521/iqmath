@@ -336,8 +336,9 @@
             full_name: document.getElementById('exampleInputtext').value,
             email: document.getElementById('Email').value,
             phone: document.getElementById('registerPhone').value,
-            region: document.getElementById('provinceSelect').value,
-            districts: document.getElementById('districtSelect').value,
+            region: document.getElementById('provinceSelect').selectedOptions[0].textContent, // name saqlash
+            districts: document.getElementById('districtSelect').selectedOptions[0].textContent, // name saqlash
+      
             address: document.getElementById('Address').value,
             brithday: document.getElementById('birthday').value,
             academy_or_school: document.getElementById('educationSelect').value,
@@ -361,7 +362,10 @@
             .then((data) => {
                 console.log('Success:', data);
                 // Muvaffaqiyatli bildirishnoma
+                localStorage.setItem('phone', formData.phone);
+                window.location.href = '/sms_code';
                 toastr.success('Ro\'yhatdan o\'tdingiz!', 'Muvaffaqiyat');
+                
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -493,6 +497,7 @@
     formatPhoneInput(registerPhoneInput);
     formatPhoneInput(loginPhoneInput);
 </script>
+<script src="{% static 'assets/js/plugins/tttttttt.js' %}"></script>
   <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
   <script src="{% static 'assets/libs/simplebar/dist/simplebar.min.js'  %}"></script>
   <script src="{% static 'assets/js/theme/app.init.js'  %}"></script>
@@ -503,7 +508,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 
-  <script src="{% static 'assets/js/plugins/toastr-init.js' %}"></script>
+  
 </body>
 
 </html>
