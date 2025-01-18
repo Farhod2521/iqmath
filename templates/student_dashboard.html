@@ -57,10 +57,10 @@ window.onload = function() {
     }
 
     // expires_in ni millisekundaga aylantirish
-    const tokenExpirationTime = new Date(Number(expiresIn) * 1000); // expires_in qiymatini timestampga aylantirish
+    const tokenExpirationTime = new Date(Number(expiresIn) * 1000); // expires_in ni millisekundaga aylantirish
     const currentTime = new Date(); // Joriy vaqt
 
-    // Agar token yaroqlilik muddati tugagan bo'lsa, foydalanuvchini logout qilish
+    // Agar token muddati tugagan bo'lsa, foydalanuvchini logout qilish
     if (currentTime > tokenExpirationTime) {
         console.log('Token muddati tugagan. Logout qilinadi.');
 
@@ -82,7 +82,6 @@ window.onload = function() {
 
 // Modalga login va parolni chiqarish
 function showCredentialsInModal() {
-    // LocalStorage'dan login va parolni olish
     const login = localStorage.getItem('login');
     const password = localStorage.getItem('password');
 
@@ -91,11 +90,9 @@ function showCredentialsInModal() {
         return;
     }
 
-    // Input ichiga login va parolni joylashtirish
     document.getElementById('exampleInputText1').value = login;
     document.getElementById('exampleInputText2').value = password;
 
-    // Konsolga login va parolni chiqarish
     console.log('Login:', login);
     console.log('Parol:', password);
 
@@ -116,11 +113,11 @@ function copyPassword() {
 
 // LocalStorage'dan login va parolni o'chirish
 function clearLocalStorage() {
-    // LocalStorage'dan login va parolni o'chirish
     localStorage.removeItem('login');
     localStorage.removeItem('password');
     console.log('Login va parol o\'chirildi.');
 }
+
 
 </script>
 

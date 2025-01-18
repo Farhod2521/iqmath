@@ -184,9 +184,9 @@
     // Formni yuborish hodisasi
 // Formni yuborish hodisasi 
 document.getElementById('smsForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Formani jo'natishni to'xtatish
+    e.preventDefault(); // Formani yuborishni to'xtatish
 
-    // Kiritilgan SMS kodni yig'ish
+    // SMS kodini yig'ish
     const smsCode = 
         document.getElementById('digit1').value +
         document.getElementById('digit2').value +
@@ -194,7 +194,7 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
         document.getElementById('digit4').value +
         document.getElementById('digit5').value;
 
-    // LocalStorage'dan telefon raqamni olish
+    // Telefon raqamini localStorage'dan olish
     const phone = localStorage.getItem('phone');
 
     if (!phone || smsCode.length !== 5) {
@@ -226,17 +226,15 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
         console.log('SMS tasdiqlash muvaffaqiyatli:', data);
         alert('Muvaffaqiyatli tasdiqlandi: ' + JSON.stringify(data));
 
-        // Javobdan login, parol va access_tokenni olish
         const login = data.login;
         const password = data.password;
         const access_token = data.access_token;
         const expires_in = data.expires_in; // expires_in ni olish
 
-        // LocalStorage'ga login, parol, access_token va expires_in ni saqlash
         localStorage.setItem('login', login);
         localStorage.setItem('password', password);
         localStorage.setItem('access_token', access_token);
-        localStorage.setItem('expires_in', expires_in);
+        localStorage.setItem('expires_in', expires_in); 
 
         // Dashboard sahifasiga o'tish
         window.location.href = '/student_dashboard';
