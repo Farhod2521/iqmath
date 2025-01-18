@@ -46,19 +46,24 @@ window.onload = function() {
     // LocalStorage'dan access_token va expires_in ni olish
     const accessToken = localStorage.getItem('access_token');
     const expiresIn = localStorage.getItem('expires_in');
-    
+    console.log('access_token:', accessToken);
+    console.log('expires_in:', expiresIn);
+
+    // Agar access_token yoki expires_in mavjud bo'lmasa, login sahifasiga o'tish
     if (!accessToken || !expiresIn) {
-        // Agar access_token yoki expires_in mavjud bo'lmasa, login sahifasiga o'tish
+        console.log('Access token yoki expires_in mavjud emas. Login sahifasiga o\'ting.');
         window.location.href = '/login';
         return;
     }
 
-    // expires_in ni millisekundaga aylantirish va tokenning yaroqlilik muddati
+    // expires_in ni millisekundaga aylantirish
     const tokenExpirationTime = new Date(Number(expiresIn) * 1000); // expires_in qiymatini timestampga aylantirish
     const currentTime = new Date(); // Joriy vaqt
 
     // Agar token yaroqlilik muddati tugagan bo'lsa, foydalanuvchini logout qilish
     if (currentTime > tokenExpirationTime) {
+        console.log('Token muddati tugagan. Logout qilinadi.');
+
         // Token muddati tugagan bo'lsa, logout
         localStorage.removeItem('access_token');
         localStorage.removeItem('expires_in');
@@ -68,8 +73,7 @@ window.onload = function() {
         // Login sahifasiga o'tkazish
         window.location.href = '/login';
     } else {
-        // Agar token hali yaroqli bo'lsa, sahifani ko'rsatish
-        console.log('Token yaroqli:', accessToken);
+        console.log('Token yaroqli: ', accessToken);
     }
 
     // Sayt ochilganda modalni avtomatik ko'rsatish
@@ -117,6 +121,7 @@ function clearLocalStorage() {
     localStorage.removeItem('password');
     console.log('Login va parol o\'chirildi.');
 }
+
 
 </script>
 
