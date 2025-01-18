@@ -230,17 +230,13 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
         const login = data.login;
         const password = data.password;
         const access_token = data.access_token;
+        const expires_in = data.expires_in; // expires_in ni olish
 
-        // Login qilish uchun ma'lumotni tayyorlash
-        const loginData = {
-            phone: login,
-            password: password
-        };
-
-        // LocalStorage'ga login, parol va access_tokenni saqlash
+        // LocalStorage'ga login, parol, access_token va expires_in ni saqlash
         localStorage.setItem('login', login);
         localStorage.setItem('password', password);
         localStorage.setItem('access_token', access_token);
+        localStorage.setItem('expires_in', expires_in);
 
         // Dashboard sahifasiga o'tish
         window.location.href = '/student_dashboard';
@@ -250,7 +246,6 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
         alert('Xatolik yuz berdi: ' + error.message);
     });
 });
-
 </script>
   <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
   <script src="{% static 'assets/libs/simplebar/dist/simplebar.min.js'  %}"></script>

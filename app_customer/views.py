@@ -93,8 +93,11 @@ class LoginAPIView(APIView):
             # Generate JWT token with custom claims
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-            access_token.set_exp(lifetime=timedelta(days=1))
+            access_token.set_exp(lifetime=timedelta(minutes=1))  # Set expiration to 1 day
             access_token['student_id'] = student.id  # Add student ID to the token payload
+
+            # Calculate the expiration time for 'expires_in'
+            expires_in = timedelta(days=1).total_seconds()
 
             student_data = {
                 "id": student.id,
@@ -104,11 +107,12 @@ class LoginAPIView(APIView):
                 "region": student.region,
                 "districts": student.districts,
                 "address": student.address,
-                "brithday": student.brithday,
+                "birthday": student.birthday,
                 "academy_or_school": student.academy_or_school,
                 "class_name": student.class_name,
                 "status": student.status,
                 "access_token": str(access_token),  # Return the token as string
+                "expires_in": expires_in,  # Include the expiration time in seconds
             }
             
             return Response(student_data, status=status.HTTP_200_OK)
