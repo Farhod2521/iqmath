@@ -5,7 +5,7 @@ from .views import student_dashboard, olimpiada, student_profile, login, sms_cod
 
 
 urlpatterns = [
-    path("", student_dashboard, name="student_dashboard"),
+    path("student_dashboard/", student_dashboard, name="student_dashboard"),
     path("olimpiada/", olimpiada, name="olimpiada"),
     path("student_profile/", student_profile, name="student_profile"),
     path("login/", login, name="login"),

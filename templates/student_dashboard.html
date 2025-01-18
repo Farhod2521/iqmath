@@ -1,12 +1,104 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-          <!-- ------------------------------- -->
-          <!-- apps Dropdown in Small screen -->
-          <!-- ------------------------------- -->
-          <!--  Mobilenavbar -->
-       
-       
+    
+
+<div id="dark-header-modal" class="modal fade" tabindex="-1" aria-labelledby="dark-header-modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header modal-colored-header bg-dark">
+        <h4 class="modal-title text-white" id="dark-header-modalLabel">
+          Login va parolingiz
+        </h4>
+        <!-- X tugmasiga onclick hodisasi qo'shildi -->
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="clearLocalStorage()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-4 row align-items-center">
+          <label for="exampleInputText1" class="form-label col-sm-4 col-form-label">Telfon raqam (Login)</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" id="exampleInputText1" placeholder="" readonly>
+          </div>
+        </div>
+        <div class="mb-4 row align-items-center">
+          <label for="exampleInputText2" class="form-label col-sm-4 col-form-label">Parol</label>
+          <div class="col-sm-8 position-relative">
+            <input type="text" class="form-control" id="exampleInputText2" placeholder="" readonly>
+            <button class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y" onclick="copyPassword()" type="button">
+              <i class="ti ti-copy fs-6"></i> Nusxa olish
+            </button>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <p>Telfon raqam bu sizning login. Parolingizni saqlab qo'ying ⚠️!</p>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<script>
+  // Modalga login va parolni chiqarish
+  function showCredentialsInModal() {
+    // LocalStorage'dan login va parolni olish
+    const login = localStorage.getItem('login');
+    const password = localStorage.getItem('password');
+
+    if (!login || !password) {
+        console.log("Login yoki parol topilmadi.");
+        return;
+    }
+
+    // Input ichiga login va parolni joylashtirish
+    document.getElementById('exampleInputText1').value = login;
+    document.getElementById('exampleInputText2').value = password;
+
+    // Konsolga login va parolni chiqarish
+    console.log('Login:', login);
+    console.log('Parol:', password);
+
+    // Modal oynasini ko'rsatish
+    const modal = new bootstrap.Modal(document.getElementById('dark-header-modal'));
+    modal.show();
+  }
+
+  // Parolni nusxalash funksiyasi
+  function copyPassword() {
+    const passwordInput = document.getElementById('exampleInputText2');
+    passwordInput.select();
+    passwordInput.setSelectionRange(0, 99999); // Ko‘rsatilgan qiymatni to‘liq tanlash
+    navigator.clipboard.writeText(passwordInput.value)
+        .then(() => alert("Parol nusxalandi!"))
+        .catch(err => alert("Nusxalashda xatolik yuz berdi: " + err));
+  }
+
+  // Sayt ochilganda modalni avtomatik ko'rsatish
+  window.onload = function() {
+    showCredentialsInModal();
+  };
+
+  // LocalStorage'dan login va parolni o'chirish
+  function clearLocalStorage() {
+    // LocalStorage'dan login va parolni o'chirish
+    localStorage.removeItem('login');
+    localStorage.removeItem('password');
+    console.log('Login va parol o\'chirildi.');
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
      
       <aside class="left-sidebar with-horizontal">
         <!-- Sidebar scroll-->
@@ -31,6 +123,7 @@
                   </span>
                   <span class="hide-menu">Dashboard</span>
                 </a>
+                
                 <ul aria-expanded="false" class="collapse first-level">
                   <li class="sidebar-item">
                     <a href="../main/index.html" class="sidebar-link">

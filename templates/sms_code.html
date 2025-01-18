@@ -182,56 +182,91 @@
     startCountdown(countdownDuration, timerElement);
 
     // Formni yuborish hodisasi
-    document.getElementById('smsForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Formani jo'natishni to'xtatish
+// Formni yuborish hodisasi 
+document.getElementById('smsForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Formani jo'natishni to'xtatish
 
-        // Kiritilgan SMS kodni yig'ish
-        const smsCode = 
-            document.getElementById('digit1').value +
-            document.getElementById('digit2').value +
-            document.getElementById('digit3').value +
-            document.getElementById('digit4').value +
-            document.getElementById('digit5').value;
+    // Kiritilgan SMS kodni yig'ish
+    const smsCode = 
+        document.getElementById('digit1').value +
+        document.getElementById('digit2').value +
+        document.getElementById('digit3').value +
+        document.getElementById('digit4').value +
+        document.getElementById('digit5').value;
 
-        // LocalStorage'dan telefon raqamni olish
-        const phone = localStorage.getItem('phone');
+    // LocalStorage'dan telefon raqamni olish
+    const phone = localStorage.getItem('phone');
 
-        if (!phone || smsCode.length !== 5) {
-            alert("Telefon raqam yoki SMS kod noto'g'ri.");
-            return;
+    if (!phone || smsCode.length !== 5) {
+        alert("Telefon raqam yoki SMS kod noto'g'ri.");
+        return;
+    }
+
+    // API uchun ma'lumotni tayyorlash
+    const requestData = {
+        phone: phone,
+        sms_code: smsCode
+    };
+
+    // SMS tasdiqlash uchun POST so'rov yuborish
+    fetch('https://jetmind.uz/api/v1/student/verify-sms/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Serverda xatolik yuz berdi.');
         }
+        return response.json();
+    })
+    .then((data) => {
+        console.log('SMS tasdiqlash muvaffaqiyatli:', data);
+        alert('Muvaffaqiyatli tasdiqlandi: ' + JSON.stringify(data));
 
-        // API uchun ma'lumotni tayyorlash
-        const requestData = {
-            phone: phone,
-            sms_code: smsCode
+        // Javobdan login va parolni olish
+        const login = data.login;
+        const password = data.password;
+
+        // Login qilish uchun ma'lumotni tayyorlash
+        const loginData = {
+            phone: login,
+            password: password
         };
 
-        // APIga POST so'rov yuborish
-        fetch('https://jetmind.uz/api/v1/student/verify-sms/', {
+        // Login API so'rovini yuborish
+        return fetch('https://jetmind.uz/api/v1/student/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(requestData),
+            body: JSON.stringify(loginData),
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Serverda xatolik yuz berdi.');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Success:', data);
-                // Muvaffaqiyatli javobni alert orqali ko'rsatish
-                alert('Muvaffaqiyatli tasdiqlandi: ' + JSON.stringify(data));
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                // Xato javobni alert orqali ko'rsatish
-                alert('Xatolik yuz berdi: ' + error.message);
-            });
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Login xatolik yuz berdi.');
+            }
+            return response.json();
+        })
+        .then((loginResponse) => {
+            console.log('Login muvaffaqiyatli:', loginResponse);
+
+            // LocalStorage'ga login va parolni saqlash
+            localStorage.setItem('login', login);
+            localStorage.setItem('password', password);
+
+            // Dashboard sahifasiga o'tish
+            window.location.href = '/student_dashboard';
+        });
+    })
+    .catch((error) => {
+        console.error('Xatolik:', error);
+        alert('Xatolik yuz berdi: ' + error.message);
     });
+});
+
 </script>
   <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
   <script src="{% static 'assets/libs/simplebar/dist/simplebar.min.js'  %}"></script>
