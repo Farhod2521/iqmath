@@ -226,9 +226,10 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
         console.log('SMS tasdiqlash muvaffaqiyatli:', data);
         alert('Muvaffaqiyatli tasdiqlandi: ' + JSON.stringify(data));
 
-        // Javobdan login va parolni olish
+        // Javobdan login, parol va access_tokenni olish
         const login = data.login;
         const password = data.password;
+        const access_token = data.access_token;
 
         // Login qilish uchun ma'lumotni tayyorlash
         const loginData = {
@@ -236,30 +237,13 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
             password: password
         };
 
-        // Login API so'rovini yuborish
-        return fetch('https://jetmind.uz/api/v1/student/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(loginData),
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Login xatolik yuz berdi.');
-            }
-            return response.json();
-        })
-        .then((loginResponse) => {
-            console.log('Login muvaffaqiyatli:', loginResponse);
+        // LocalStorage'ga login, parol va access_tokenni saqlash
+        localStorage.setItem('login', login);
+        localStorage.setItem('password', password);
+        localStorage.setItem('access_token', access_token);
 
-            // LocalStorage'ga login va parolni saqlash
-            localStorage.setItem('login', login);
-            localStorage.setItem('password', password);
-
-            // Dashboard sahifasiga o'tish
-            window.location.href = '/student_dashboard';
-        });
+        // Dashboard sahifasiga o'tish
+        window.location.href = '/student_dashboard';
     })
     .catch((error) => {
         console.error('Xatolik:', error);

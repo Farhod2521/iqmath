@@ -93,7 +93,7 @@ class LoginAPIView(APIView):
             # Generate JWT token with custom claims
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-            access_token.set_exp(lifetime=timedelta(hours=2))
+            access_token.set_exp(lifetime=timedelta(minutes=1))
             access_token['student_id'] = student.id  # Add student ID to the token payload
 
             student_data = {
