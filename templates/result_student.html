@@ -1264,6 +1264,13 @@
 
   <script>
     // Bearer tokenni sessionStorage'dan olish
+    function formatTime(minutes) {
+    const hours = Math.floor(minutes / 60);  // Soat
+    const mins = minutes % 60;  // Daqiqalar
+    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+}
+
+// Bearer tokenni sessionStorage'dan olish
 const accessToken = sessionStorage.getItem('access_token');
 
 // Agar access token mavjud bo'lsa, so'rov yuborish
@@ -1285,8 +1292,9 @@ if (accessToken) {
             row.innerHTML = `
                 <td>${data.science_name}</td>
                 <td>${data.score}</td>
-                <td>${data.test_time} min</td>
-                <td>${data.correct_answers}/${data.total_questions}</td>
+                <td>${formatTime(data.test_time)}</td>  <!-- formatTime funksiyasidan foydalanamiz -->
+                <td>${data.correct_answers}</td>
+      
                 <td>0</td>
                 <td>0</td>
                 <td>0</td>

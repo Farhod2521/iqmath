@@ -237,6 +237,7 @@
         const startTime = parseInt(localStorage.getItem('startTime') || '0', 10);
         const currentTime = Math.floor(Date.now() / 1000);
         const testTime = (currentTime - startTime);
+        console.log(testTime)
     
         // Prepare data for posting with correct question IDs (item.id)
         const data = {

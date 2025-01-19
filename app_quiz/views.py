@@ -156,7 +156,7 @@ class ResultListView(APIView):
             "score": result.score,  # Ball
             "total_questions": result.total_questions,  # Jami savollar
             "correct_answers": result.correct_answers,  # To'g'ri javoblar
-            "test_time": result.test_time//60,  # Vaqt (sekundlarda)
+            "test_time": result.test_time,  # Vaqt (sekundlarda)
             "correct_questions": result.correct_questions,  # To'g'ri savollar (JSON)
             "incorrect_questions": result.incorrect_questions,  # Xato savollar (JSON)
         }
