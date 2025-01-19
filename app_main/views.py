@@ -25,7 +25,8 @@ def sms_code(request):
 def quiz_student(request):
     return render(request, "quiz_student.html")
 
-
+def result_student(request):
+    return render(request, "result_student.html")
 
 
 

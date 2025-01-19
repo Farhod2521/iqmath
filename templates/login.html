@@ -339,26 +339,32 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     };
 
     fetch("https://jetmind.uz/api/v1/student/login/", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-})
-.then(response => response.json())
-.then(data => {
-    if (data.status === true) {
-    sessionStorage.setItem("access_token", data.access_token);
-    window.location.href = "/student_dashboard";
-} else {
-    alert("Login failed: " + (data.message || "Invalid credentials."));
-}
-})
-.catch(error => {
-    console.error("Error:", error);
-});
-});
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === true) {
+            // Save access token
+            sessionStorage.setItem("access_token", data.access_token);
 
+            // Calculate access_token_time (3 hours from now)
+            const accessTokenTime = new Date().getTime() + (3 * 60 * 60 * 1000); // 3 hours in milliseconds
+            sessionStorage.setItem("access_token_time", accessTokenTime);
+
+            window.location.href = "/student_dashboard";
+        } else {
+            alert("Login failed: " + (data.message || "Invalid credentials."));
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+    });
+});
 
 ////////////////////////
 ////////////////////// REGISTER

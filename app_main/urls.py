@@ -3,7 +3,7 @@ from django.urls import path
 
 from .views import (
 student_dashboard, olimpiada, student_profile, 
-login, sms_code, teachers_dashboard, quiz_student
+login, sms_code, teachers_dashboard, quiz_student, result_student
 )
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path("login/", login, name="login"),
     path("sms_code/", sms_code, name="sms_code"),
     path("quiz_student/", quiz_student, name="quiz_student"),
+    path("result_student/", result_student, name="result_student"),
 
 
 
