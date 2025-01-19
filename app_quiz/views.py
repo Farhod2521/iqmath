@@ -142,10 +142,13 @@ class ResultListView(APIView):
             raise AuthenticationFailed("No student ID found in token")
 
         # Result modelidan studentni olish
-        student = get_object_or_404(Result, id=student_id)
+        student = get_object_or_404(Student, id=student_id)
 
         # Natijalar ro'yxatini olish
-        results = Result.objects.filter(student=student).first()
+        results = Result.objects.filter(student=student)
+
+        if not results:
+            return Response({"error": "No results found for this student"}, status=status.HTTP_404_NOT_FOUND)
 
         # Natijalar ro'yxatini yaratish
         data = []
@@ -163,9 +166,6 @@ class ResultListView(APIView):
 
         # Response qaytarish
         return Response(data, status=status.HTTP_200_OK)
-
-
-
 
 
 
