@@ -236,7 +236,8 @@
         const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
         const startTime = parseInt(localStorage.getItem('startTime') || '0', 10);
         const currentTime = Math.floor(Date.now() / 1000);
-        const testTime = (currentTime - startTime)/60;
+        const testTime = (currentTime - startTime);
+    
         // Prepare data for posting with correct question IDs (item.id)
         const data = {
             "answers": Object.keys(savedAnswers).map(index => {
