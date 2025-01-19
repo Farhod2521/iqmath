@@ -221,9 +221,8 @@
     const confirmBtn = document.getElementById('confirmBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const triggerModalBtn = document.getElementById('triggerModalBtn');  // Bu tugma testni yakunlash uchun
-    
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3Mjk1MDEzLCJpYXQiOjE3MzcyODQyMTMsImp0aSI6IjY2MTg3Yzg5YjIxNjRjZGQ4NzM0MGQwMjUyYWM0ZDg4IiwidXNlcl9pZCI6NTYsInN0dWRlbnRfaWQiOjU0fQ.KZ6Z7NxK72-F8dhoQQgjsq3dA08aXLd4nuPAa5fz6dA";
-    
+    const accessToken = sessionStorage.getItem('access_token');
+    const token = accessToken
     const headers = {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
@@ -323,6 +322,9 @@ if (window.location.pathname === '/result_student/') {
     
     // 1. Savollarni olish va chiqarish
     async function fetchQuestions() {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log(urlParams)
         const response = await fetch('https://jetmind.uz/api/v1/quiz/quizzes/1/');
         const data = await response.json();
     

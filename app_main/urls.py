@@ -12,7 +12,7 @@ urlpatterns = [
     path("student_profile/", student_profile, name="student_profile"),
     path("login/", login, name="login"),
     path("sms_code/", sms_code, name="sms_code"),
-    path("quiz_student/", quiz_student, name="quiz_student"),
+    path("quiz_student/<int:id>/", quiz_student, name="quiz_student"),
     path("result_student/", result_student, name="result_student"),
 
 
