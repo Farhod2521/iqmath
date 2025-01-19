@@ -141,33 +141,28 @@ class ResultListView(APIView):
         if not student_id:
             raise AuthenticationFailed("No student ID found in token")
 
-        # Result modelidan studentni olish
+        # Studentni olish
         student = get_object_or_404(Student, id=student_id)
 
-        # Natijalar ro'yxatini olish
-        results = Result.objects.filter(student=student)
+        # Eng oxirgi natijani olish
+        result = Result.objects.filter(student=student).last()
 
-        if not results:
+        if not result:
             return Response({"error": "No results found for this student"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Natijalar ro'yxatini yaratish
-        data = []
-        for result in results:
-            result_data = {
-                "science_name": result.science.name,  # Science nomi
-                "score": result.score,  # Ball
-                "total_questions": result.total_questions,  # Jami savollar
-                "correct_answers": result.correct_answers,  # To'g'ri javoblar
-                "test_time": result.test_time,  # Vaqt (sekundlarda)
-                "correct_questions": result.correct_questions,  # To'g'ri savollar (JSON)
-                "incorrect_questions": result.incorrect_questions,  # Xato savollar (JSON)
-            }
-            data.append(result_data)
+        # Natija ma'lumotlarini olish
+        result_data = {
+            "science_name": result.science.name,  # Fan nomi
+            "score": result.score,  # Ball
+            "total_questions": result.total_questions,  # Jami savollar
+            "correct_answers": result.correct_answers,  # To'g'ri javoblar
+            "test_time": result.test_time,  # Vaqt (sekundlarda)
+            "correct_questions": result.correct_questions,  # To'g'ri savollar (JSON)
+            "incorrect_questions": result.incorrect_questions,  # Xato savollar (JSON)
+        }
 
         # Response qaytarish
-        return Response(data, status=status.HTTP_200_OK)
-
-
+        return Response(result_data, status=status.HTTP_200_OK)
 
 
 
