@@ -120,6 +120,63 @@ class QuizCreateAPIView(CreateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = Quiz_Add_Serializers
 
+class ResultListView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Tokenni olish
+        token_header = request.headers.get('Authorization', '')
+        if not token_header or not token_header.startswith('Bearer '):
+            return Response({"error": "Authorization token missing or invalid"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = token_header.split(' ')[1]
+        try:
+            # Tokenni dekodlash
+            decoded_token = jwt.decode(token, options={"verify_signature": False})
+        except jwt.DecodeError:
+            return Response({"error": "Failed to decode token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Token orqali studentni aniqlash
+        student_id = decoded_token.get('student_id')
+        if not student_id:
+            raise AuthenticationFailed("No student ID found in token")
+
+        # Result modelidan studentni olish
+        student = get_object_or_404(Result, id=student_id)
+
+        # Natijalar ro'yxatini olish
+        results = Result.objects.filter(student=student).first()
+
+        # Natijalar ro'yxatini yaratish
+        data = []
+        for result in results:
+            result_data = {
+                "science_name": result.science.name,  # Science nomi
+                "score": result.score,  # Ball
+                "total_questions": result.total_questions,  # Jami savollar
+                "correct_answers": result.correct_answers,  # To'g'ri javoblar
+                "test_time": result.test_time,  # Vaqt (sekundlarda)
+                "correct_questions": result.correct_questions,  # To'g'ri savollar (JSON)
+                "incorrect_questions": result.incorrect_questions,  # Xato savollar (JSON)
+            }
+            data.append(result_data)
+
+        # Response qaytarish
+        return Response(data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##########################                               ScienceListView                  ####################################################################
 class ScienceListView(APIView):
