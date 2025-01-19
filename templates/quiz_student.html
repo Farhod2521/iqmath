@@ -1,0 +1,417 @@
+{% extends "base_student.html" %}
+{% load static %}
+{% block content %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Ishlash</title>
+
+    <style>
+        .question-card {
+            margin-bottom: 20px;
+        }
+
+        .answer-option {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .answer-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .answer-option.selected {
+            background-color: #615dff;
+            color: #fff;
+        }
+
+        .timer {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .test-numbers {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .test-number {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .test-number.completed {
+            background-color: #615dff;
+            color: white;
+        }
+
+        .scrollable-questions {
+        height: calc(100vh - 50px); /* Oynaning balandligini sozlaydi */
+        overflow-y: scroll; /* Faqat vertikal scroll */
+        padding-right: 5px; /* Toza scroll uchun */
+        scrollbar-width: thin; /* Ingichka scroll */
+        scrollbar-color: #615dff transparent; /* Scroll bar rangi */
+    }
+
+    .scrollable-questions::-webkit-scrollbar {
+        width: 8px; /* Ingichka scrollbar */
+    }
+
+    .scrollable-questions::-webkit-scrollbar-thumb {
+        background-color: #615dff; /* Scroll barning barmog'i rangi */
+        border-radius: 10px; /* Yumshoq burchaklar */
+    }
+
+    .scrollable-questions::-webkit-scrollbar-track {
+        background: transparent; /* Scroll izlari uchun orqa fon */
+    }
+
+    .fixed-panel {
+        position: sticky;
+        top: 10px; /* Eng yuqori qismga yopishadi */
+    }
+    .btn-yakunlash {
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px 25px; /* Tugma kattaligini belgilash */
+        border-radius: 8px; /* Yumaloq burchaklar */
+        transition: all 0.3s ease; /* Animatsiya */
+        margin-top: 20px; /* Yuqori bo'sh joy */
+    }
+
+    .btn-yakunlash:hover {
+        background-color: #c82333; /* Qizil hover rangi */
+        transform: scale(1.1); /* Kattalashish effekti */
+    }
+    .fixed-panel {
+    position: sticky;
+    top: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft translucent shadow */
+    border-radius: 10px; /* Optional: rounded corners */
+    background: rgba(255, 255, 255, 0.85); /* Slight transparency to the background */
+    padding: 10px; /* Adjust padding for better design */
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for the modal */
+  }
+
+  .modal h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .modal p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* Buttons */
+  .modal-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
+  .btn {
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .btn1 {
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .btn-confirm {
+    background-color: #db4e5c;
+    color: white;
+    border: none;
+  }
+
+  .btn-confirm:hover {
+    background-color: #c82333;
+    color: white;
+  }
+
+  .btn-cancel {
+    background-color: #f8b400;
+    color: white;
+    border: none;
+  }
+
+  .btn-cancel:hover {
+    background-color: #e68900;
+  }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Modal Dialog -->
+    <div class="modal" id="confirmationModal">
+      <div class="modal-content">
+          <h2>Rostan ham yakunlamoqchimisiz?</h2>
+          <br><br>
+          <div class="modal-buttons">
+              <button class="btn1 btn-confirm" id="confirmBtn">Yakunlamoqchiman</button>
+              <button class="btn1 btn-cancel" id="cancelBtn">Testni davom etish</button>
+          </div>
+      </div>
+  </div>
+
+  <div class="content mt-5">
+    <div class="row">
+        <div class="col-lg-9 scrollable-questions" id="questions-container"></div>
+
+        <div class="col-lg-3">
+          <div class="card fixed-panel">
+              <div class="card-body text-center">
+                  <div id="chart-radial-basic" class="mb-4"></div>
+                  <div class="test-numbers"></div>
+                  <button type="button" class="btn btn-danger btn-yakunlash" id="triggerModalBtn">
+                      Yakunlash
+                  </button>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+
+
+
+
+const modal = document.getElementById('confirmationModal');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const triggerModalBtn = document.getElementById('triggerModalBtn');  // Bu tugma testni yakunlash uchun
+
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3MjgxNjEwLCJpYXQiOjE3MzcyODEwMTAsImp0aSI6IjU2MjgyYzRmYWE4OTRjYzM4NDU2MmZlMzU3ZjFjZjg2IiwidXNlcl9pZCI6OCwic3R1ZGVudF9pZCI6M30.Mv2iF0NciCuRxBQLdZb-S_GokgivJcKEOLVoIg50O14";
+
+    const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+    };
+
+    confirmBtn.addEventListener('click', function () {
+        alert('Test yakunlandi!');
+        hideModal();
+        
+        // Fetch saved answers from localStorage
+        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+        
+        // Prepare data for posting
+        const data = {
+            "answers": Object.keys(savedAnswers).map(index => ({
+                "quiz_id": parseInt(index) + 1,  // Adjust to match the quiz ID format
+                "answer": savedAnswers[index]
+            })),
+            "random_answers": [],  // Add random_answers if you have that data
+            "test_time": 30  // If you have the test time, use it, otherwise remove
+        };
+
+        // Post the data to the API
+        fetch('https://jetmind.uz/api/v1/quiz/submit-quiz-result/', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    cancelBtn.addEventListener('click', function () {
+        hideModal();
+    });
+
+    window.addEventListener("beforeunload", function (e) {
+        e.preventDefault();
+        e.returnValue = "";
+        showModal();
+    });
+
+    triggerModalBtn.addEventListener('click', function () {
+        showModal();
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            hideModal();
+        }
+    });
+
+    function showModal() {
+        modal.style.display = 'flex';
+    }
+
+    function hideModal() {
+        modal.style.display = 'none';
+    }
+
+    // 1. Savollarni olish va chiqarish
+    async function fetchQuestions() {
+        const response = await fetch('https://jetmind.uz/api/v1/quiz/quizzes/1/');
+        const data = await response.json();
+
+        const questionsContainer = document.getElementById('questions-container');
+        const testNumbersContainer = document.querySelector('.test-numbers');
+
+        data.forEach((item, index) => {
+            const questionCard = document.createElement('div');
+            questionCard.className = 'card question-card';
+            questionCard.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">Savol ${index + 1}: ${item.question}</h5>
+                    <div class="answer-option" data-id="A">${item.A}</div>
+                    <div class="answer-option" data-id="B">${item.B}</div>
+                    <div class="answer-option" data-id="C">${item.C}</div>
+                    <div class="answer-option" data-id="D">${item.D}</div>
+                </div>
+            `;
+            questionsContainer.appendChild(questionCard);
+
+            const testNumber = document.createElement('div');
+            testNumber.className = 'test-number';
+            testNumber.textContent = index + 1;
+            testNumbersContainer.appendChild(testNumber);
+        });
+
+        // Javobni tanlash va saqlash
+        document.querySelectorAll('.answer-option').forEach(option => {
+            option.addEventListener('click', function () {
+                const siblings = this.parentElement.querySelectorAll('.answer-option');
+                siblings.forEach(sib => sib.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // Tanlangan javobni localStorage'ga saqlash
+                const questionIndex = Array.from(questionsContainer.children).indexOf(this.closest('.question-card'));
+                const selectedAnswer = this.dataset.id;
+                let answers = JSON.parse(localStorage.getItem('answers')) || {};
+                answers[questionIndex] = selectedAnswer;
+                localStorage.setItem('answers', JSON.stringify(answers));
+
+                // Test raqamini belgilash
+                const testNumbers = document.querySelectorAll('.test-number');
+                testNumbers[questionIndex].classList.add('completed');
+            });
+        });
+
+        // Savollarni yangilab olish, saqlangan javoblarni qo'shish
+        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || {};
+        document.querySelectorAll('.question-card').forEach((card, index) => {
+            const savedAnswer = savedAnswers[index];
+            if (savedAnswer) {
+                const selectedOption = card.querySelector(`.answer-option[data-id="${savedAnswer}"]`);
+                selectedOption.classList.add('selected');
+                const testNumbers = document.querySelectorAll('.test-number');
+                testNumbers[index].classList.add('completed');
+            }
+        });
+    }
+
+    // 2. Timerni sozlash
+    function setupTimer() {
+        const timerElement = document.querySelector('.timer');
+        let startTime = localStorage.getItem('startTime');
+        const totalDuration = 3600; // 60 daqiqa (sekundlarda)
+
+        if (!startTime) {
+            startTime = Math.floor(Date.now() / 1000);
+            localStorage.setItem('startTime', startTime);
+        }
+
+        const chart = new ApexCharts(document.querySelector('#chart-radial-basic'), {
+            series: [100],
+            chart: {
+                height: 200,
+                type: 'radialBar'
+            },
+            colors: ['#615dff'],
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: '70%' },
+                    dataLabels: {
+                        name: { show: false },
+                        value: {
+                            fontSize: '20px',
+                            formatter: function () {
+                                const remainingTime = totalDuration - (Math.floor(Date.now() / 1000) - startTime);
+                                const minutes = String(Math.floor(remainingTime / 60)).padStart(2, '0');
+                                const seconds = String(remainingTime % 60).padStart(2, '0');
+                                return `${minutes}:${seconds}`;
+                            },
+                            color: '#000'
+                        }
+                    }
+                }
+            }
+        });
+        chart.render();
+
+        const timerInterval = setInterval(() => {
+            const remainingTime = totalDuration - (Math.floor(Date.now() / 1000) - startTime);
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+            } else {
+                const progress = (remainingTime / totalDuration) * 100;
+                chart.updateSeries([progress]);
+            }
+        }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchQuestions();
+        setupTimer();
+    });
+  </script>
+</body>
+
+</html>
+{% endblock content %}

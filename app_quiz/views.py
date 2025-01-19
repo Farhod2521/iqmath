@@ -154,8 +154,148 @@ class QuizListView(APIView):
 
 
 
-
 class ResultCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # Tokenni olish va tekshirish
+        token_header = request.headers.get('Authorization', '')
+        if not token_header or not token_header.startswith('Bearer '):
+            return Response({"error": "Authorization token missing or invalid"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = token_header.split(' ')[1]
+
+        try:
+            # Imzoni tekshirmasdan tokenni ochish
+            decoded_token = jwt.decode(token, options={"verify_signature": False})
+        except jwt.DecodeError:
+            return Response({"error": "Failed to decode token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Studentni token orqali topish
+        student_id = decoded_token.get('student_id')
+        if not student_id:
+            raise AuthenticationFailed("No student ID found in token")
+
+        student = get_object_or_404(Student, id=student_id)
+
+        # Foydalanuvchi kiritgan ma'lumotlar
+        data = request.data
+        answers = data.get("answers", [])
+        random_answers = data.get("random_answers", [])  # Random javoblar
+        test_time = data.get("test_time", 0)  # Test vaqti (daqiqalarda)
+
+        # Natija hisoblash uchun o'zgaruvchilar
+        total_questions = len(answers)
+        correct_answers = 0
+        total_score = 0
+        science_set = set()
+        correct_questions = []
+        incorrect_questions = []
+
+        # Javoblarni qayta ishlash
+        for answer in answers:
+            quiz_id = answer.get("quiz_id")
+            user_answer = answer.get("answer")
+
+            try:
+                quiz = Quiz.objects.get(id=quiz_id)
+                science_set.add(quiz.science)
+                if quiz.answer == user_answer:
+                    correct_answers += 1
+                    total_score += quiz.score
+                    correct_questions.append(quiz.id)  # To'g'ri savollarni saqlash
+                else:
+                    incorrect_questions.append(quiz.id)  # Xato savollarni saqlash
+            except Quiz.DoesNotExist:
+                return Response({"error": f"Quiz with id {quiz_id} not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Random savollarni saqlash
+        random_score = {}
+        for rand_answer in random_answers:
+            question_id = rand_answer.get("question_id")
+            score = rand_answer.get("score")
+            random_score[question_id] = score
+
+        # Fandagi savollarni tekshirish
+        if len(science_set) != 1:
+            return Response({"error": "All questions must belong to the same science"}, status=status.HTTP_400_BAD_REQUEST)
+        science = science_set.pop()
+
+        # Natija obyektini yaratish
+        result = Result.objects.create(
+            student=student,
+            quiz=quiz,
+            science=science,
+            score=total_score,
+            total_questions=total_questions,
+            correct_answers=correct_answers,
+            correct_questions=correct_questions,
+            incorrect_questions=incorrect_questions,
+            random_score=random_score,
+            test_time=test_time,  # Test vaqti saqlanadi
+        )
+
+
+        # Muvaffaqiyatli javob qaytarish
+        response_data = {
+            "student": student.id,
+            "science": science.id,
+            "score": total_score,
+            "total_questions": total_questions,
+            "correct_answers": correct_answers,
+            "correct_questions": correct_questions,
+            "incorrect_questions": incorrect_questions,
+            "random_score": random_score,
+            "test_time": result.test_time,
+        }
+        return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ResultCreateAPIView1231(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

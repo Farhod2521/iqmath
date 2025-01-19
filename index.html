@@ -1,119 +1,196 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SMS Code Verification</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-    .container {
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .timer {
-      font-size: 20px;
-      font-weight: bold;
-      color: #ff5555;
-      margin-bottom: 20px;
-    }
-    .code-inputs {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    .code-inputs input {
-      width: 50px;
-      height: 50px;
-      font-size: 24px;
-      text-align: center;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      outline: none;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    .code-inputs input:focus {
-      border-color: #007bff;
-    }
-    .btn-primary {
-      display: block;
-      width: 100%;
-      padding: 15px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      font-size: 18px;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-    .btn-primary:hover {
-      background: #0056b3;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="timer" id="timer">02:00</div>
-    <form id="smsForm">
-      <label for="smsCode" class="form-label">SMS Kodni Kiriting</label>
-      <div class="code-inputs">
-        <input type="text" maxlength="1" id="digit1" oninput="moveToNext(this, 'digit2')">
-        <input type="text" maxlength="1" id="digit2" oninput="moveToNext(this, 'digit3')">
-        <input type="text" maxlength="1" id="digit3" oninput="moveToNext(this, 'digit4')">
-        <input type="text" maxlength="1" id="digit4" oninput="moveToNext(this, 'digit5')">
-        <input type="text" maxlength="1" id="digit5">
-      </div>
-      <button type="submit" class="btn-primary">Tasdiqlash</button>
-    </form>
-  </div>
+<script>
+  const modal = document.getElementById('confirmationModal');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const triggerModalBtn = document.getElementById('triggerModalBtn');  // Bu tugma testni yakunlash uchun
 
-  <script>
-    // Countdown timer
-    let countdown = 120; // 2 minutes
-    const timerElement = document.getElementById('timer');
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3Mjg0MDE0LCJpYXQiOjE3MzcyODM0MTQsImp0aSI6IjIzMGU2YzY4ZjUxNTRlYzRiMGJjZWViMWE2OWIzYmFlIiwidXNlcl9pZCI6OCwic3R1ZGVudF9pZCI6M30.6kIfXcDlwR1j8NTUSkO27XAhZohFY98hUNlKo8ooORc";
 
-    function updateTimer() {
-      const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
-      const seconds = String(countdown % 60).padStart(2, '0');
-      timerElement.textContent = `${minutes}:${seconds}`;
-      if (countdown > 0) {
-        countdown--;
-      } else {
-        clearInterval(timerInterval);
-        alert('Vaqt tugadi!');
+  const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+  };
+
+  confirmBtn.addEventListener('click', function () {
+      alert('Test yakunlandi!');
+      hideModal();
+      
+      // Fetch saved answers from localStorage
+      const savedAnswers = JSON.parse(localStorage.getItem('answers')) || [];
+      
+      // Prepare data for posting
+      const data = {
+          "answers": Object.keys(savedAnswers).map(index => ({
+              "quiz_id": parseInt(index) + 1,  // Adjust to match the quiz ID format
+              "answer": savedAnswers[index]
+          })),
+          "random_answers": [],  // Add random_answers if you have that data
+          "test_time": 30  // If you have the test time, use it, otherwise remove
+      };
+
+      // Post the data to the API
+      fetch('http://127.0.0.1:8000/api/v1/quiz/submit-quiz-result/', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+          console.log('Success:', result);
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  });
+
+  cancelBtn.addEventListener('click', function () {
+      hideModal();
+  });
+
+  window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "";
+      showModal();
+  });
+
+  triggerModalBtn.addEventListener('click', function () {
+      showModal();
+  });
+
+  window.addEventListener('click', function (event) {
+      if (event.target === modal) {
+          hideModal();
       }
-    }
-    const timerInterval = setInterval(updateTimer, 1000);
+  });
 
-    // Automatically move to the next input field
-    function moveToNext(current, nextId) {
-      if (current.value.length === 1 && nextId) {
-        document.getElementById(nextId).focus();
-      }
+  function showModal() {
+      modal.style.display = 'flex';
+  }
+
+  function hideModal() {
+      modal.style.display = 'none';
+  }
+
+  // Fetch and render quiz questions
+  async function fetchQuestions() {
+      const response = await fetch('http://127.0.0.1:8000/api/v1/quiz/quizzes/1/');
+      const data = await response.json();
+
+      const questionsContainer = document.getElementById('questions-container');
+      const testNumbersContainer = document.querySelector('.test-numbers');
+
+      data.forEach((item, index) => {
+          const questionCard = document.createElement('div');
+          questionCard.className = 'card question-card';
+          questionCard.innerHTML = `
+              <div class="card-body">
+                  <h5 class="card-title">Savol ${index + 1}: ${item.question}</h5>
+                  <div class="answer-option" data-id="A">${item.A}</div>
+                  <div class="answer-option" data-id="B">${item.B}</div>
+                  <div class="answer-option" data-id="C">${item.C}</div>
+                  <div class="answer-option" data-id="D">${item.D}</div>
+              </div>
+          `;
+          questionsContainer.appendChild(questionCard);
+
+          const testNumber = document.createElement('div');
+          testNumber.className = 'test-number';
+          testNumber.textContent = index + 1;
+          testNumbersContainer.appendChild(testNumber);
+      });
+
+      document.querySelectorAll('.answer-option').forEach(option => {
+          option.addEventListener('click', function () {
+              const siblings = this.parentElement.querySelectorAll('.answer-option');
+              siblings.forEach(sib => sib.classList.remove('selected'));
+              this.classList.add('selected');
+
+              const questionIndex = Array.from(questionsContainer.children).indexOf(this.closest('.question-card'));
+              const selectedAnswer = this.dataset.id;
+              let answers = JSON.parse(localStorage.getItem('answers')) || {};
+              answers[questionIndex] = selectedAnswer;
+              localStorage.setItem('answers', JSON.stringify(answers));
+
+              const testNumbers = document.querySelectorAll('.test-number');
+              testNumbers[questionIndex].classList.add('completed');
+          });
+      });
+
+      const savedAnswers = JSON.parse(localStorage.getItem('answers')) || {};
+      document.querySelectorAll('.question-card').forEach((card, index) => {
+          const savedAnswer = savedAnswers[index];
+          if (savedAnswer) {
+              const selectedOption = card.querySelector(`.answer-option[data-id="${savedAnswer}"]`);
+              selectedOption.classList.add('selected');
+              const testNumbers = document.querySelectorAll('.test-number');
+              testNumbers[index].classList.add('completed');
+          }
+      });
+  }
+ // Savollarni yangilab olish, saqlangan javoblarni qo'shish
+        const savedAnswers = JSON.parse(localStorage.getItem('answers')) || {};
+        document.querySelectorAll('.question-card').forEach((card, index) => {
+            const savedAnswer = savedAnswers[index];
+            if (savedAnswer) {
+                const selectedOption = card.querySelector(`.answer-option[data-id="${savedAnswer}"]`);
+                selectedOption.classList.add('selected');
+                const testNumbers = document.querySelectorAll('.test-number');
+                testNumbers[index].classList.add('completed');
+            }
+        });
+    
+
+    // 2. Timerni sozlash
+    function setupTimer() {
+        const timerElement = document.querySelector('.timer');
+        let startTime = localStorage.getItem('startTime');
+        const totalDuration = 3600; // 60 daqiqa (sekundlarda)
+
+        if (!startTime) {
+            startTime = Math.floor(Date.now() / 1000);
+            localStorage.setItem('startTime', startTime);
+        }
+
+        const chart = new ApexCharts(document.querySelector('#chart-radial-basic'), {
+            series: [100],
+            chart: {
+                height: 200,
+                type: 'radialBar'
+            },
+            colors: ['#615dff'],
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: '70%' },
+                    dataLabels: {
+                        name: { show: false },
+                        value: {
+                            fontSize: '20px',
+                            formatter: function () {
+                                const remainingTime = totalDuration - (Math.floor(Date.now() / 1000) - startTime);
+                                const minutes = String(Math.floor(remainingTime / 60)).padStart(2, '0');
+                                const seconds = String(remainingTime % 60).padStart(2, '0');
+                                return `${minutes}:${seconds}`;
+                            },
+                            color: '#000'
+                        }
+                    }
+                }
+            }
+        });
+        chart.render();
+
+        const timerInterval = setInterval(() => {
+            const remainingTime = totalDuration - (Math.floor(Date.now() / 1000) - startTime);
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+            } else {
+                const progress = (remainingTime / totalDuration) * 100;
+                chart.updateSeries([progress]);
+            }
+        }, 1000);
     }
 
-    // Form submission handling
-    document.getElementById('smsForm').addEventListener('submit', (event) => {
-      event.preventDefault();
-      const smsCode = Array.from(document.querySelectorAll('.code-inputs input'))
-        .map(input => input.value)
-        .join('');
-      if (smsCode.length === 5) {
-        alert(`SMS kod: ${smsCode}`);
-      } else {
-        alert('5 xonali kodni to‘liq kiriting!');
-      }
-    });
-  </script>
-</body>
-</html>
+  document.addEventListener('DOMContentLoaded', () => {
+      fetchQuestions();
+  });
+</script>

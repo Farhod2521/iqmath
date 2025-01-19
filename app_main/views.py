@@ -21,3 +21,15 @@ def login(request):
 
 def sms_code(request):
     return render(request, "sms_code.html")
+
+def quiz_student(request):
+    return render(request, "quiz_student.html")
+
+
+
+
+
+
+################################   TEACHERS #########################################
+def  teachers_dashboard(request):
+    return render(request, "teacher_dashoard.html")

@@ -63,12 +63,12 @@ if __name__ == '__main__':
 ######## VERIFIKATION ##############
 {
   "phone": "998915812109",
-  "sms_code": "000000"
+  "sms_code": "12345"
 }
 ######   LOGIN #############
 {
   "phone": "998915812109",
-  "password": "Z5JNhxMY"
+  "password": "fBmjTxDl"
 }
 
 {

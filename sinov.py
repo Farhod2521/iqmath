@@ -2,14 +2,15 @@ import requests
 from datetime import datetime
 import pytz
 
+# UTC vaqtini olish
 utc_time = datetime(2025, 1, 14, 12, 30, 0, tzinfo=pytz.UTC).isoformat()
-print(utc_time)
+
 def submit_quiz_result():
     # API endpoint
     url = "http://127.0.0.1:8000/api/v1/quiz/submit-quiz-result/"
 
     # Token
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3MDM5NzgxLCJpYXQiOjE3MzcwMzI1ODEsImp0aSI6ImJhMzdkNTAxODM2ZDQ5YzY5MWFhNWFiMjFkOTViMjUwIiwidXNlcl9pZCI6Nywic3R1ZGVudF9pZCI6Mn0.JOJWYvMRGz44I0NVfiWO_bImhbhf5pR3C0bVTuHF6fI"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3MjgxNjEwLCJpYXQiOjE3MzcyODEwMTAsImp0aSI6IjU2MjgyYzRmYWE4OTRjYzM4NDU2MmZlMzU3ZjFjZjg2IiwidXNlcl9pZCI6OCwic3R1ZGVudF9pZCI6M30.Mv2iF0NciCuRxBQLdZb-S_GokgivJcKEOLVoIg50O14"
 
     # Authorization header
     headers = {
@@ -20,12 +21,17 @@ def submit_quiz_result():
     # POST so‘rov ma'lumotlari
     data = {
         "answers": [
-
             {"quiz_id": 1, "answer": "A"},
             {"quiz_id": 2, "answer": "A"},
-            {"quiz_id": 3, "answer": "B"},
+            {"quiz_id": 3, "answer": "B"}
         ],
-        "end_time": "2025-01-16T13:30:00+00:00"
+        "random_answers": [
+            {"question_id": 1, "score": 2.1},
+            {"question_id": 3, "score": 5.1},
+            {"question_id": 5, "score": 3.1}
+        ],
+
+        "test_time": 30  # Agar test vaqti ham yuborilishi kerak bo'lsa
     }
 
     # POST so‘rov yuborish

@@ -62,10 +62,8 @@ class Result(models.Model):
     score = models.FloatField()
     total_questions = models.PositiveIntegerField()
     correct_answers = models.PositiveIntegerField()
-    attempt_number = models.PositiveIntegerField(default=1)  # Urinishlar soni
     start_time = models.DateTimeField(auto_now_add=True)
-    end_time = models.DateTimeField()
-    test_time = models.CharField(max_length=50)  # Necha minut ishlagan vaqt sifatida saqlanadi
+    test_time = models.PositiveIntegerField()  # Necha minut ishlagan vaqt sifatida saqlanadi
     status = models.CharField(
         max_length=20,
         choices=[
@@ -74,30 +72,19 @@ class Result(models.Model):
         ],
         default='failed'
     )
-
-    def calculate_status(self, passing_score=50):
-        """Natija holatini hisoblash"""
-        if self.score >= passing_score:
-            self.status = 'passed'
-        else:
-            self.status = 'failed'
-        self.save()
-
-    def calculate_test_time(self):
-        """Boshlanish va tugash vaqtlaridan necha minut ishlaganini hisoblash"""
-        duration = self.end_time - self.start_time
-        minutes = duration.total_seconds() // 60
-        self.test_time = f"{int(minutes)} minutes"
-        self.save()
+    correct_questions = models.JSONField(default=list)  # To'g'ri javoblar (savollarni id-lari bilan)
+    incorrect_questions = models.JSONField(default=list)  # Xato javoblar (savollarni id-lari bilan)
+    random_score = models.JSONField(default=dict)  # Random savollar va ularga tegishli ballar
 
     def __str__(self):
-        return f"{self.student} - {self.quiz} - {self.score} points (Attempt {self.attempt_number})"
+        return f"{self.student} - {self.quiz} - {self.score}"
 
     class Meta:
         db_table = 'Result'
         ordering = ['-score']
         verbose_name = 'Result'
         verbose_name_plural = 'Results'
+
 
 
 class Result_Telegram_Bot(models.Model):

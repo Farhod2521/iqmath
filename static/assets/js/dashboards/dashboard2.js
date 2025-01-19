@@ -81,8 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // =====================================
     var options = {
         color: "#adb5bd",
-        series: [55, 55, 55],
-        labels: ["Expance", "Revenue", "Profit"],
+        series: [100, 100, 100], // 100 ta oson, o'rta, va qiyin savollar
+        labels: ["O'rta Daraja Savol", "Qiyin Savol", "Oson Savol" ],
         chart: {
             type: "donut",
             fontFamily: "inherit",
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         plotOptions: {
             pie: {
                 donut: {
-                    size: '88%',
+                    size: '10%',
                     background: 'transparent',
                     labels: {
                         show: true,
@@ -105,35 +105,61 @@ document.addEventListener("DOMContentLoaded", function () {
                         total: {
                             show: true,
                             color: '#7C8FAC',
-                            fontSize: '20px',
+                            fontSize: '2px',
                             fontWeight: "600",
-                            label: '$500,458',
+                            label: 'Jami savollar', // Bu yerda kerakli qiymatni o'zgartiring
                         },
                     },
                 },
             },
         },
-        stroke: {
-            show: false,
-        },
+      
         dataLabels: {
             enabled: false,
         },
-
+    
         legend: {
             show: false,
         },
-        colors: ["var(--bs-primary)", "#EAEFF4", "var(--bs-secondary)"],
-
+        colors: [
+            "rgb(255, 174, 31)",
+            "rgb(250, 137, 107)",
+            
+            "rgb(19, 222, 185)",   
+          
+        ],
+    
         tooltip: {
             theme: "dark",
             fillSeriesColor: false,
+            y: {
+                formatter: function (value) {
+                    return value + " Savol";
+                }
+            }
         },
+    
+        // Hover effect (sichqoncha ustiga borganida)
+        plotOptions: {
+            pie: {
+                donut: {
+                    labels: {
+                        show: true,
+                        name: {
+                            show: true,
+                        },
+                        total: {
+                            show: true,
+                            label: 'Jami savollar', // Bu yerda kerakli qiymatni o'zgartiring
+                        },
+                    },
+                },
+            },
+        }
     };
-
+    
     var chart = new ApexCharts(document.querySelector("#sales-overview"), options);
     chart.render();
-
 
 
     // =====================================
