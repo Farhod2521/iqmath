@@ -1244,7 +1244,7 @@
         <thead>
             <tr>
                 <th scope="col">Fan nomi</th>
-                <th scope="col">Ball</th>
+                <th scope="col">Jami ball</th>
                 <th scope="col">Vaqt</th>
                 <th scope="col">Nechta to'g'ri</th>
                 <th scope="col">2.1</th>
@@ -1253,7 +1253,7 @@
             </tr>
         </thead>
         <tbody id="result-tbody">
-            <!-- Natijalar bu yerga keladi -->
+            <!-- Natijalar bu yerga joylashtiriladi -->
         </tbody>
     </table>
 </div>
@@ -1263,40 +1263,46 @@
 
 
   <script>
-     // Bearer tokenni sessionStorage'dan olish
-     const accessToken = sessionStorage.getItem('access_token');
-        
-        // Agar access token mavjud bo'lsa, so'rov yuborish
-        if (accessToken) {
-            fetch('https://jetmind.uz/api/v1/quiz/result/list/', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultTbody = document.getElementById('result-tbody');
-                data.forEach(result => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${result.science_name}</td>
-                        <td>${result.score}</td>
-                        <td>${result.test_time} sec</td>
-                        <td>${result.correct_answers}</td>
-                        <td>${result.correct_questions.length}</td>
-                        <td>${result.incorrect_questions.length}</td>
-                    `;
-                    resultTbody.appendChild(row);
-                });
-            })
-            .catch(error => {
-                console.error('Xato:', error);
-            });
-        } else {
-            alert("Access token mavjud emas.");
+    // Bearer tokenni sessionStorage'dan olish
+const accessToken = sessionStorage.getItem('access_token');
+
+// Agar access token mavjud bo'lsa, so'rov yuborish
+if (accessToken) {
+    fetch('https://jetmind.uz/api/v1/quiz/result/list/', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
         }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultTbody = document.getElementById('result-tbody');
+        
+        // Agar ma'lumotlar bo'lsa, jadvalga joylashtiramiz
+        if (data) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${data.science_name}</td>
+                <td>${data.score}</td>
+                <td>${data.test_time} min</td>
+                <td>${data.correct_answers}/${data.total_questions}</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+        
+            `;
+            resultTbody.appendChild(row);
+        } else {
+            resultTbody.innerHTML = '<tr><td colspan="6">Natijalar mavjud emas.</td></tr>';
+        }
+    })
+    .catch(error => {
+        console.error('Xato:', error);
+    });
+} else {
+    alert("Access token mavjud emas.");
+}
     window.onload = function() {
     // sessionStorage'dan access_token va access_token_time ni olish
     const accessToken = sessionStorage.getItem('access_token');

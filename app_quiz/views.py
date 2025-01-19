@@ -145,7 +145,7 @@ class ResultListView(APIView):
         student = get_object_or_404(Student, id=student_id)
 
         # Eng oxirgi natijani olish
-        result = Result.objects.filter(student=student).last()
+        result = Result.objects.filter(student=student).first()
 
         if not result:
             return Response({"error": "No results found for this student"}, status=status.HTTP_404_NOT_FOUND)
@@ -156,7 +156,7 @@ class ResultListView(APIView):
             "score": result.score,  # Ball
             "total_questions": result.total_questions,  # Jami savollar
             "correct_answers": result.correct_answers,  # To'g'ri javoblar
-            "test_time": result.test_time,  # Vaqt (sekundlarda)
+            "test_time": result.test_time//60,  # Vaqt (sekundlarda)
             "correct_questions": result.correct_questions,  # To'g'ri savollar (JSON)
             "incorrect_questions": result.incorrect_questions,  # Xato savollar (JSON)
         }
