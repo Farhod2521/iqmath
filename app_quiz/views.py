@@ -123,7 +123,7 @@ class QuizCreateAPIView(CreateAPIView):
 
 ##########################                               ScienceListView                  ####################################################################
 class ScienceListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         sciences = Science.objects.all()
