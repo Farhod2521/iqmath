@@ -145,7 +145,7 @@ class ResultListView(APIView):
         student = get_object_or_404(Student, id=student_id)
 
         # Eng oxirgi natijani olish
-        result = Result.objects.filter(student=student).first()
+        result = Result.objects.filter(student=student).last()
 
         if not result:
             return Response({"error": "No results found for this student"}, status=status.HTTP_404_NOT_FOUND)
