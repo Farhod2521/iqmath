@@ -70,11 +70,16 @@ class VerifySmsCodeAPIView(APIView):
 
         if serializer.is_valid():
             user = serializer.validated_data["user"]
+            try:
+                student = Student.objects.get(user=user)
+            except Student.DoesNotExist:
+                return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
             # Generate JWT token with custom claims
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-            access_token.set_exp(lifetime=timedelta(hours=3))  # Token expires in 3 hours
+            access_token.set_exp(lifetime=timedelta(hours=3))
+            access_token['student_id'] = student.id   # Token expires in 3 hours
             expires_in = timedelta(hours=3).total_seconds()
 
             return Response({

@@ -52,7 +52,7 @@ if __name__ == '__main__':
 {
   "full_name": "John Doe",
   "email": "john.doe@example.com",
-  "phone": "998915812109",
+  "phone": "998915812178",
   "region": "Toshkent",
   "districts": "chilzonr",
   "address": "Tashkent, Uzbekistan",
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 }
 ######## VERIFIKATION ##############
 {
-  "phone": "998915812121",
+  "phone": "998915812178",
   "sms_code": "12345"
 }
 ######   LOGIN #############
