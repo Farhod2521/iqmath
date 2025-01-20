@@ -64,21 +64,6 @@ class RegisterStudentAPIView(APIView):
             return Response({"message": "Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang."}, status=status.HTTP_200_OK)
         return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-# class VerifySmsCodeAPIView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         serializer = VerifySmsCodeSerializer(data=request.data)
-
-#         if serializer.is_valid():
-#             return Response({
-#                 "message": "Ro'yxatdan o'tish muvaffaqiyatli yakunlandi.",
-#                 "login": serializer.validated_data['phone'],
-#                 "password": serializer.validated_data['password']
-#             }, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 class VerifySmsCodeAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = VerifySmsCodeSerializer(data=request.data)
@@ -86,28 +71,25 @@ class VerifySmsCodeAPIView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data["user"]
 
-            try:
-                student = Student.objects.get(user=user)
-            except Student.DoesNotExist:
-                return Response({"detail": "Student profile not found."}, status=status.HTTP_404_NOT_FOUND)
-
             # Generate JWT token with custom claims
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-            access_token.set_exp(lifetime=timedelta(hours=3))  # Set expiration to 3 hours
-            access_token['student_id'] = student.id  # Add student ID to the token payload
-
-            expires_in = timedelta(hours=3).total_seconds()  # 3 hours in seconds
+            access_token.set_exp(lifetime=timedelta(hours=3))  # Token expires in 3 hours
+            expires_in = timedelta(hours=3).total_seconds()
 
             return Response({
                 "message": "Ro'yxatdan o'tish muvaffaqiyatli yakunlandi.",
                 "login": serializer.validated_data['phone'],
                 "password": serializer.validated_data['password'],
                 "access_token": str(access_token),  # Return the token as string
-                "expires_in": expires_in,  # Return token expiration time
+                "expires_in": expires_in,  # Include the expiration time in seconds
             }, status=status.HTTP_201_CREATED)
-
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 class LoginAPIView(APIView):
     def post(self, request, *args, **kwargs):
