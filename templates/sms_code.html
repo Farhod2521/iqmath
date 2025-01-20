@@ -94,7 +94,10 @@
                     <div class="row">
                     
                       <div class="col-md-12">
-                 
+                        <div id="sms-code-error" style="text-align: center; display: none;">
+                       
+                          
+                        </div>
                         <form id="smsForm">
                             <div class="code-inputs">
                                 <input type="text" maxlength="1" id="digit1" oninput="moveToNext(this, 'digit2')" onkeypress="return isNumberKey(event)">
@@ -223,8 +226,7 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
         return response.json();
     })
     .then((data) => {
-        console.log('SMS tasdiqlash muvaffaqiyatli:', data);
-        alert('Muvaffaqiyatli tasdiqlandi: ' + JSON.stringify(data));
+      
 
         const login = data.login;
         const password = data.password;
@@ -233,16 +235,34 @@ document.getElementById('smsForm').addEventListener('submit', function (e) {
 
         localStorage.setItem('login', login);
         localStorage.setItem('password', password);
-        localStorage.setItem('access_token', access_token);
-        localStorage.setItem('expires_in', expires_in); 
+        sessionStorage.setItem("access_token", access_token);
+        const accessTokenTime = new Date().getTime() + (3 * 60 * 60 * 1000); // 3 hours in milliseconds
+        sessionStorage.setItem("access_token_time", accessTokenTime);
 
         // Dashboard sahifasiga o'tish
         window.location.href = '/student_dashboard';
     })
+    
     .catch((error) => {
-        console.error('Xatolik:', error);
-        alert('Xatolik yuz berdi: ' + error.message);
-    });
+    const errorMessage = document.getElementById("sms-code-error");
+    errorMessage.style.display = "block";
+
+    // Xatolik ma'lumotini to'g'ri olish
+    let errorText = "Noma'lum xatolik yuz berdi";
+    if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.phone) {
+        errorText = error.response.data.errors.phone[0];
+    } else if (error.message) {
+        errorText = error.message; // Agar oddiy xatolik xabari bo'lsa
+    }
+
+    // Xatolik xabarini ko'rsatish
+    errorMessage.innerHTML = `<p style="color: red;">Sms kod xato kiritildi !!!</p>`;
+
+    // Xabarni 5 soniyadan keyin yashirish (ixtiyoriy)
+    setTimeout(() => {
+        errorMessage.style.display = "none";
+    }, 3000);
+});
 });
 </script>
   <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
