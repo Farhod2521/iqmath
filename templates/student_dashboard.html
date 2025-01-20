@@ -103,49 +103,106 @@ function showCredentialsInModal() {
     const modal = new bootstrap.Modal(document.getElementById('dark-header-modal'));
     modal.show();
 }
-document.addEventListener("DOMContentLoaded", function () {
- // Simple Pie Chart -------> PIE CHART
- var options_simple = {
-    series: [44, 55, 13, 43, 22],
-    chart: {
-      fontFamily: "inherit",
-      width: 380,
-      type: "pie",
-    },
-    colors: [
-      "var(--bs-primary)",
-      "var(--bs-secondary)",
-      "#ffae1f",
-      "#fa896b",
-      "#39b69a",
-    ],
-    labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
+window.onload = function() {
+    // Pie Chart options
+    var options_simple = {
+      series: [44, 55], // Pie chartdagi ma'lumotlar
+      chart: {
+        fontFamily: "inherit",
+        width: 380, // Grafikning kengligi
+        height: 380, // Grafikning balandligi
+        type: "pie",
+      },
+      colors: [
+        "var(--bs-primary)",
+        "#ffae1f",
+        "#fa896b",
+        "#39b69a",
+      ],
+      labels: ["To'g'ri javoblar ", "Nato'g'ri javoblar"], // Pie chartda ko'rsatiladigan label'lar
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+              height: 200,
+            },
+            legend: {
+              position: "bottom",
+            },
           },
-          legend: {
-            position: "bottom",
+        },
+      ],
+      legend: {
+        labels: {
+          colors: ["#a1aab2"],
+        },
+      },
+    };
+
+    var chart_pie_simple = new ApexCharts(
+      document.querySelector("#chart-pie-simple"),
+      options_simple
+    );
+    chart_pie_simple.render();
+
+    // Radial Bar Chart options (Ball tizimi bilan)
+    var options_strocked = {
+      series: [85.4], // Ball miqdori (masalan 10.2)
+      chart: {
+        fontFamily: "inherit",
+        height: 200, // Radial bar chart uchun bir xil balandlik
+        width: 200,  // Pie chart bilan bir xil kenglik
+        type: "radialBar",
+        offsetY: -10,
+      },
+      colors: ["#615dff"], // Grafik rangi
+      plotOptions: {
+        radialBar: {
+          startAngle: -135,
+          endAngle: 135,
+          dataLabels: {
+            name: {
+              fontSize: "16px",
+              color: undefined,
+              offsetY: 120,
+            },
+            value: {
+              offsetY: 76,
+              fontSize: "22px",
+              color: "#a1aab2",
+              formatter: function (val) {
+                return val + " ball"; // Ballni ko'rsatish
+              },
+            },
           },
         },
       },
-    ],
-    legend: {
-      labels: {
-        colors: ["#a1aab2"],
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: "dark",
+          shadeIntensity: 0.15,
+          inverseColors: false,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 50, 65, 91],
+        },
       },
-    },
-  };
+      stroke: {
+        dashArray: 4,
+      },
+      labels: ["Ball"], // Grafikda ko'rsatiladigan label
+    };
 
-  var chart_pie_simple = new ApexCharts(
-    document.querySelector("#chart-pie-simple"),
-    options_simple
-  );
-  chart_pie_simple.render();}
-</script>
+    var chart_radial_strocked = new ApexCharts(
+      document.querySelector("#chart-radial-stroked-gauge"),
+      options_strocked
+    );
+    chart_radial_strocked.render();
+  }
+  </script>
 
 
 
@@ -936,15 +993,14 @@ document.addEventListener("DOMContentLoaded", function () {
                       </div>
                       <div class="d-flex align-items-center">
                         <div class="border-end pe-4 border-muted border-opacity-10">
-                          <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center">$2,340<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
-                          </h3>
-                          <p class="mb-0 text-dark">Today’s Sales</p>
+
+                          <button type="button" class="btn btn-outline-primary">
+                            <i class="ti ti-robot fs-5 lh-base text-primary"></i>
+                            Telegram bot orqali ro'yhatdan o'ting
+                    </button>
+                          
                         </div>
-                        <div class="ps-4">
-                          <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center">35%<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
-                          </h3>
-                          <p class="mb-0 text-dark">Overall Performance</p>
-                        </div>
+                  
                       </div>
                     </div>
                     <div class="col-sm-5">
@@ -956,26 +1012,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
               </div>
             </div>
-            <div class="col-sm-6 col-lg-2 d-flex align-items-stretch">
-              <div class="card w-100">
-                <div class="card-body p-4">
-                  <h4 class="fw-semibold">$10,230</h4>
-                  <p class="mb-2 fs-3">Expense</p>
-                  <div id="expense"></div>
+      
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Test natijalari bo'yicha statistika</h4>
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <div id="chart-radial-stroked-gauge"></div> 
+                      </div>
+                      <div class="col-lg-6">
+                        <div id="chart-pie-simple"></div>
+                      </div>
+                    </div>
+                  
                 </div>
               </div>
             </div>
-            
-              <div class="col-lg-6">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Simple Pie Chart</h4>
-                    <div id="chart-pie-simple"></div>
-                  </div>
-                </div>
-          
         
-          </div>
         </div>
       </div>
      <div class="container-fluid">
