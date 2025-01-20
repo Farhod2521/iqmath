@@ -100,9 +100,11 @@ class VerifySmsCodeSerializer(serializers.Serializer):
         try:
             user = User.objects.get(phone=phone, sms_code=sms_code)
         except User.DoesNotExist:
-            raise serializers.ValidationError("Telefon raqam yoki kod noto'g'ri.")
+            raise serializers.ValidationError({
+                "non_field_errors": ["Telefon raqam yoki kod noto'g'ri."]
+            })
 
-        # Custom password generation with letters, numbers, and symbols
+        # Generate a random password
         chars = string.ascii_letters + string.digits + '@#$'
         password = ''.join(random.choice(chars) for _ in range(8))
 
@@ -112,11 +114,18 @@ class VerifySmsCodeSerializer(serializers.Serializer):
         user.save()
 
         # Update student status to True
-        student = Student.objects.get(user=user)
-        student.status = True  # Set the student status to True
-        student.save()
-        print(f"Sizning login: {user.phone} va parolingiz: {password}")
-        # Send LOGIN and PASSWORD via SMS
-        #send_sms(phone, message=f"Sizning login: {user.phone} va parolingiz: {password}")
+        try:
+            student = Student.objects.get(user=user)
+            student.status = True
+            student.save()
+        except Student.DoesNotExist:
+            raise serializers.ValidationError({
+                "non_field_errors": ["Student profili topilmadi."]
+            })
 
-        return {"phone": phone, "password": password}
+        # Send login and password via SMS (simulated here with a print statement)
+        print(f"Sizning login: {user.phone} va parolingiz: {password}")
+        # send_sms(phone, message=f"Sizning login: {user.phone} va parolingiz: {password}")
+
+        # Return user info
+        return {"phone": phone, "password": password, "user": user}
