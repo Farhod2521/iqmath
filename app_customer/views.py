@@ -16,27 +16,41 @@ from django.shortcuts import get_object_or_404
 class StudentProfileAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
-        token = request.META.get('HTTP_TOKEN')
-        
-        if not token:
-            raise AuthenticationFailed('Invalid token, login again, please')
+        token_header = request.headers.get('Authorization', '')
+        if not token_header or not token_header.startswith('Bearer '):
+            return Response({"error": "Authorization token missing or invalid"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = token_header.split(' ')[1]
 
         try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Token expired, login again, please')
-        
-        student_id = payload['student_id']
+            decoded_token = jwt.decode(token, options={"verify_signature": False})
+        except jwt.DecodeError:
+            return Response({"error": "Failed to decode token"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        student = get_object_or_404(Student, id=student_id)
-    
+   
+        student_id = decoded_token.get('student_id')
+      
+        if not student_id:
+            raise AuthenticationFailed('Student ID not found in token')
+
+
+        try:
+            student = Student.objects.get(id=student_id)
+        except Student.DoesNotExist:
+            return Response({"error": "Student profile not found"}, status=404)
         data = {
-            'id': student.id,
-            'name': student.full_name,
-            'region': student.region
+            "full_name": student.full_name,
+            "email": student.user.email,  # Student bilan bog'liq foydalanuvchi
+            "phone": student.user.phone,  # Telefon raqam foydalanuvchining username sifatida saqlangan
+            "region": student.region,
+            "districts": student.districts,
+            "address": student.address,
+            "brithday": student.brithday,
+            "academy_or_school": student.academy_or_school,
+            "class_name": student.class_name,
         }
-        
-        return Response(data, status=200)
+
+        return Response(data)
 
 
 
