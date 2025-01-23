@@ -369,24 +369,27 @@ class Results_EXAM_View(APIView):
 
 
 
-
-class Pass_Exam_UpdateResultStatusAPIView(APIView):
     
-    def patch(self, request, result_id):
+ class Pass_Exam_UpdateResultStatusAPIView(APIView):
+    
+    def patch(self, request):
+        result_id = request.data.get('result_id')  # result_id ni body'dan olamiz
+        
+        if not result_id:
+            return Response({"detail": "result_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             result = Result.objects.get(id=result_id)
         except Result.DoesNotExist:
             return Response({"detail": "Result not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Serializerga request ma'lumotlarini va mavjud result obyekti bilan ta'minlaymiz
-        serializer = Pass_Exam_ResultSerializer(result, data=request.data, partial=True)
+        # Serializerni request ma'lumotlari bilan yangilaymiz
+        serializer = ResultSerializer(result, data=request.data, partial=True)
 
-        # Serializerni tekshiramiz
         if serializer.is_valid():
-            serializer.save()  # Yangilanishni saqlaymiz
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         
-        # Agar serializer noto'g'ri bo'lsa
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
