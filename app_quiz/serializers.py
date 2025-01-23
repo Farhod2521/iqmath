@@ -75,7 +75,7 @@ class Result_Telegram_Serializers(serializers.ModelSerializer):
             "score",
             "total_questions",
             "correct_answers",
-            "attempt_number",
+      
             "test_time",
         ]
 
