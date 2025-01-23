@@ -342,44 +342,53 @@
         ///////////////////////////////////////////////////////////////////////////////////
         ////////////
         const apiUrl_add = "https://jetmind.uz/api/v1/quiz/result_all/";
-        const apiUrl_pass_exam = "https://jetmind.uz/api/v1/quiz/result_pass_exam_status/";
+const apiUrl_pass_exam = "https://jetmind.uz/api/v1/quiz/result_pass_exam_status/";
 
-        fetch(apiUrl_add)
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector("#file_export_add tbody");
+fetch(apiUrl_add)
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector("#file_export_add tbody");
 
-                // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
-                if ($.fn.DataTable.isDataTable('#file_export_add')) {
-                    $('#file_export_add').DataTable().clear().destroy();
-                }
+        // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+        if ($.fn.DataTable.isDataTable('#file_export_add')) {
+            $('#file_export_add').DataTable().clear().destroy();
+        }
 
-                // Ma'lumotlarni qo'shish
-                data.forEach((item, index) => {
-                    const row = document.createElement("tr");
-                    row.setAttribute("data-id", item.id);  // Qator uchun noyob ID berish
+        // Ma'lumotlarni qo'shish
+        data.forEach((item, index) => {
+            const row = document.createElement("tr");
+            row.setAttribute("data-id", item.id);  // Qator uchun noyob ID berish
 
-                    row.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${item.full_name}</td>
-                        <td>${item.region}</td>
-                        <td>${item.brithday}</td>
-                        <td>${item.phone}</td>
-                        <td>${item.score}</td>
-                        <td>${item.correct_answers} / ${item.total_questions}</td>
-                        <td>${item.test_time} min</td>
-                        <td>
-                            <button class="btn btn-primary" data-id="${item.id}">
-                                <i class="ti ti-plus"></i> 
-                            </button> 
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.full_name}</td>
+                <td>${item.region}</td>
+                <td>${item.brithday}</td>
+                <td>${item.phone}</td>
+                <td>${item.score}</td>
+                <td>${item.correct_answers} / ${item.total_questions}</td>
+                <td>${item.test_time} min</td>
+                <td>
+                    <button class="btn btn-primary" data-id="${item.id}">
+                        <i class="ti ti-plus"></i> 
+                    </button> 
+                </td>
+            `;
+            tableBody.appendChild(row);
 
-                    // Tugma bosilganda API ga so'rov yuborish
-                    row.querySelector("button").addEventListener("click", function() {
-                        const resultId = item.id;  // Tugmadoan id olish
-                        fetch(apiUrl_pass_exam, {
+            // Tugma bosilganda API ga so'rov yuborish
+            row.querySelector("button").addEventListener("click", function() {
+                const resultId = item.id;  // Tugmadoan id olish
+                const button = this;  // Tugma elementini olish
+                button.disabled = true;  // Tugmani bloklash (so'rov yuborilmoqda)
+
+                // Loading holatini ko'rsatish
+                const loadingIcon = document.createElement("i");
+                loadingIcon.classList.add("ti", "ti-loader", "ti-spin");  // Loading ikonkasi
+                button.innerHTML = "";  // Tugmani tozalash
+                button.appendChild(loadingIcon);
+
+                fetch(apiUrl_pass_exam, {
                     method: 'PATCH',  // PATCH metodini ishlatish
                     headers: {
                         'Content-Type': 'application/json'
@@ -398,65 +407,138 @@
                 })
                 .then(responseData => {
                     if (responseData && responseData.success) {
-                        row.remove();  // Muvaffaqiyatli bo'lsa, qatorni o'chirish
+                        // Tugmadagi ikonani yangilash
+                        button.innerHTML = '<i class="ti ti-correct"></i>';  // Ikonani yangilash
+
+                        // Tugma uchun xabar chiqarish
+                        button.classList.add("btn-success");  // Yashil tugma holati
+
+                        // 2 sekunddan so'ng tugmani yana asl holatiga qaytarish
+                        setTimeout(() => {
+                            button.disabled = false;
+                            button.innerHTML = '<i class="ti ti-plus"></i>';  // Asl ikonka holatiga qaytarish
+                            button.classList.remove("btn-success");
+                        }, 2000);
+
                     } else {
                         console.log("Failed to update exam status:", responseData);
                     }
                 })
-                .catch(error => console.error("Error in PATCH request:", error));
-
-                    });
+                .catch(error => {
+                    console.error("Error in PATCH request:", error);
+                    button.disabled = false;
+                    button.innerHTML = '<i class="ti ti-plus"></i>';  // Tugmani asl holatiga qaytarish
                 });
+            });
+        });
 
-                // DataTable-ni qayta ishga tushirish
-                $('#file_export_add').DataTable({
-                    pageLength: 10,
-                });
-            })
-            .catch(error => console.error("Error fetching data:", error));
+        // DataTable-ni qayta ishga tushirish
+        $('#file_export_add').DataTable({
+            pageLength: 10,
+        });
+    })
+    .catch(error => console.error("Error fetching data:", error));
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            const pass_exam_delete = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
+const pass_exam_delete = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
 
-            // Fetch data from API and populate the table
-            fetch(pass_exam_delete)
-                .then(response => response.json())
-                .then(data => {
-                    const tableBody = document.querySelector("#file_export_delete tbody");
-                    
-                    // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
-                    if ($.fn.DataTable.isDataTable('#file_export_delete')) {
-                        $('#file_export_delete').DataTable().clear().destroy();
-                    }
+fetch(pass_exam_delete)
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector("#file_export_delete tbody");
 
-                    // Ma'lumotlarni qo'shish
-                    data.forEach((item, index) => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${item.full_name}</td>
-                            <td>${item.region}</td>
-                            <td>${item.brithday}</td>
-                            <td>${item.phone}</td>
-                            <td>${item.score}</td>
-                            <td>${item.correct_answers} / ${item.total_questions}</td>
-                            <td>${item.test_time} min</td>
-                            <td><button class="btn btn-outline-danger">
+        // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+        if ($.fn.DataTable.isDataTable('#file_export_delete')) {
+            $('#file_export_delete').DataTable().clear().destroy();
+        }
+
+        // Ma'lumotlarni qo'shish
+        data.forEach((item, index) => {
+            const row = document.createElement("tr");
+            row.setAttribute("data-id", item.id);  // Qator uchun noyob ID berish
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.full_name}</td>
+                <td>${item.region}</td>
+                <td>${item.brithday}</td>
+                <td>${item.phone}</td>
+                <td>${item.score}</td>
+                <td>${item.correct_answers} / ${item.total_questions}</td>
+                <td>${item.test_time} min</td>
+                <td>
+                    <button class="btn btn-outline-danger" data-id="${item.id}">
                         <i class="ti ti-trash"></i>
-                    </button></td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
 
-                    // DataTable-ni qayta ishga tushirish
-                    $('#file_export_delete').DataTable({
-                       
-              
-                        pageLength: 10
-                    });
+            // Tugma bosilganda API ga so'rov yuborish
+            row.querySelector("button").addEventListener("click", function() {
+                const resultId = item.id;  // Tugmadoan id olish
+                const button = this;  // Tugma elementini olish
+                button.disabled = true;  // Tugmani bloklash (so'rov yuborilmoqda)
+
+                // Loading holatini ko'rsatish
+                const loadingIcon = document.createElement("i");
+                loadingIcon.classList.add("ti", "ti-loader", "ti-spin");  // Loading ikonkasi
+                button.innerHTML = "";  // Tugmani tozalash
+                button.appendChild(loadingIcon);
+
+                fetch(apiUrl_pass_exam, {
+                    method: 'PATCH',  // PATCH metodini ishlatish
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        result_id: resultId,  // resultId ni yuborish
+                        status_exam: false
+                    })
                 })
-                .catch(error => console.error("Error fetching data:", error));
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();  // Javobni qaytaradi
+                    } else {
+                        console.error('Error with PATCH request:', response.statusText);
+                    }
+                })
+                .then(responseData => {
+                    if (responseData && responseData.success) {
+                        // Tugmadagi ikonani yangilash
+                        button.innerHTML = '<i class="ti ti-check"></i>';  // Ikonani yangilash
+
+                        // Tugma uchun xabar chiqarish
+                        button.classList.add("btn-success");  // Yashil tugma holati
+
+                        // 2 sekunddan so'ng tugmani yana asl holatiga qaytarish
+                        setTimeout(() => {
+                            button.disabled = false;
+                            button.innerHTML = '<i class="ti ti-trash"></i>';  // Asl ikonka holatiga qaytarish
+                            button.classList.remove("btn-success");
+                        }, 2000);
+
+                    } else {
+                        console.log("Failed to update exam status:", responseData);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error in PATCH request:", error);
+                    button.disabled = false;
+                    button.innerHTML = '<i class="ti ti-trash"></i>';  // Tugmani asl holatiga qaytarish
+                });
+            });
+        });
+
+        // DataTable-ni qayta ishga tushirish
+        $('#file_export_delete').DataTable({
+            pageLength: 10,
+        });
+    })
+    .catch(error => console.error("Error fetching data:", error));
+
         $(document).ready(function () {
             $('#file_export_telegram').DataTable({
                 dom: "Bfrtip",
