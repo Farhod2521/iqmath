@@ -40,32 +40,25 @@
         </div>
         <div class="modal-body">
             <div class="table-responsive">
-                <table class="table w-100 table-striped table-bordered display text-nowrap">
+                <table id="file_export_add"  class="table w-100 table-striped table-bordered display text-nowrap">
          
                   <thead>
                     <!-- start row -->
                     <tr>
-                      <th>F.I.SH</th>
-                      <th>To'plagan bali</th>
-                      <th>Vaqt</th>
-                      <th>Tug'ilgan kuni</th>
-                      <th>Telfon raqam</th>
-                      <th>Qo'shish</th>
+                        <th>F.I.SH</th>
+                        <th>Viloyat</th>
+                        <th>Tug'ilgan kuni</th>
+                        <th>Telefon raqam</th>
+                        <th>Jami balli</th>
+                        <th>Nechtasini topgan</th>
+                        <th>Vaqt</th>
+                        <th>Qo'shish</th>
                     </tr>
                     <!-- end row -->
                   </thead>
                   <tbody>
                
-                    <tr>
-                      <td>Jonas Alexander</td>
-                      <td>85.2</td>
-                      <td>15:41</td>
-                      <td>2010/07/14</td>
-                      <td>+998 99 425 25 21 </td>
-                      <td><button class="btn btn-primary">
-                        <i class="ti ti-plus"></i> 
-                    </button></td>
-                    </tr>
+             
                
              
                   </tbody>
@@ -89,32 +82,25 @@
         </div>
         <div class="modal-body">
             <div class="table-responsive">
-                <table class="table w-100 table-striped table-bordered display text-nowrap">
+                <table  id="file_export_delete" class="table w-100 table-striped table-bordered display text-nowrap">
          
                   <thead>
                     <!-- start row -->
                     <tr>
-                      <th>F.I.SH</th>
-                      <th>To'plagan bali</th>
-                      <th>Vaqt</th>
-                      <th>Tug'ilgan kuni</th>
-                      <th>Telfon raqam</th>
-                      <th>Qo'shish</th>
+                        <th>F.I.SH</th>
+                        <th>Viloyat</th>
+                        <th>Tug'ilgan kuni</th>
+                        <th>Telefon raqam</th>
+                        <th>Jami balli</th>
+                        <th>Nechtasini topgan</th>
+                        <th>Vaqt</th>
+                        <th>Chetlashtirish</th>
                     </tr>
                     <!-- end row -->
                   </thead>
                   <tbody>
                
-                    <tr>
-                      <td>Jonas Alexander</td>
-                      <td>85.2</td>
-                      <td>15:41</td>
-                      <td>2010/07/14</td>
-                      <td>+998 99 425 25 21 </td>
-                      <td><button class="btn btn-outline-danger">
-                        <i class="ti ti-trash"></i>
-                    </button></td>
-                    </tr>
+                 
                
              
                   </tbody>
@@ -339,6 +325,98 @@
         })
         .catch(error => console.error("Error fetching data:", error));
 
+
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
+        ////////////
+        const apiUrl_add = "https://jetmind.uz/api/v1/quiz/result_all/";
+        
+        // Fetch data from API and populate the table
+        fetch(apiUrl_add)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector("#file_export_add tbody");
+                
+                // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+                if ($.fn.DataTable.isDataTable('#file_export_add')) {
+                    $('#file_export_add').DataTable().clear().destroy();
+                }
+
+                // Ma'lumotlarni qo'shish
+                data.forEach(item => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${item.full_name}</td>
+                        <td>${item.region}</td>
+                        <td>${item.brithday}</td>
+                        <td>${item.phone}</td>
+                        <td>${item.score}</td>
+                        <td>${item.correct_answers} / ${item.total_questions}</td>
+                        <td>${item.test_time} min</td>
+                        <td>     <button class="btn btn-primary">
+                        <i class="ti ti-plus"></i> 
+                    </button> </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+           
+                // DataTable-ni qayta ishga tushirish
+                $('#file_export_add').DataTable({
+                  
+                  
+                    pageLength: 10,
+                
+                });
+            })
+            .catch(error => console.error("Error fetching data:", error));
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            const pass_exam_delete = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
+
+            // Fetch data from API and populate the table
+            fetch(pass_exam_delete)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#file_export_delete tbody");
+                    
+                    // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+                    if ($.fn.DataTable.isDataTable('#file_export_delete')) {
+                        $('#file_export_delete').DataTable().clear().destroy();
+                    }
+
+                    // Ma'lumotlarni qo'shish
+                    data.forEach(item => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${item.full_name}</td>
+                            <td>${item.region}</td>
+                            <td>${item.brithday}</td>
+                            <td>${item.phone}</td>
+                            <td>${item.score}</td>
+                            <td>${item.correct_answers} / ${item.total_questions}</td>
+                            <td>${item.test_time} min</td>
+                            <td><button class="btn btn-outline-danger">
+                        <i class="ti ti-trash"></i>
+                    </button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // DataTable-ni qayta ishga tushirish
+                    $('#file_export_delete').DataTable({
+                       
+              
+                        pageLength: 10
+                    });
+                })
+                .catch(error => console.error("Error fetching data:", error));
         $(document).ready(function () {
             $('#file_export_telegram').DataTable({
                 dom: "Bfrtip",
