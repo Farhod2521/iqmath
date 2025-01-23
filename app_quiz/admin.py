@@ -19,7 +19,7 @@ class QuizAdmin(admin.ModelAdmin):
     ordering = ('-score',)
 
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ('student', 'quiz', 'science', 'score', 'total_questions', 'correct_answers', 'status_exam')
+    list_display = ('id', 'student', 'quiz', 'science', 'score', 'total_questions', 'correct_answers', 'status_exam')
     search_fields = ('student__first_name', 'student__last_name', 'quiz__question')
     list_filter = ('status_exam', 'quiz', 'science', 'student')
     ordering = ('-score',)
