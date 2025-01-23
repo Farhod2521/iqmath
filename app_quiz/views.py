@@ -370,7 +370,7 @@ class Results_EXAM_View(APIView):
 
 
     
- class Pass_Exam_UpdateResultStatusAPIView(APIView):
+class Pass_Exam_UpdateResultStatusAPIView(APIView):
     
     def patch(self, request):
         result_id = request.data.get('result_id')  # result_id ni body'dan olamiz
