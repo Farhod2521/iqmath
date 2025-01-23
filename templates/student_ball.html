@@ -537,50 +537,7 @@ fetch(pass_exam_delete)
             pageLength: 10,
         });
     })
-    .catch(error => console.error("Error fetching data:", error));
 
-        $(document).ready(function () {
-            $('#file_export_telegram').DataTable({
-                dom: "Bfrtip",
-                buttons: [
-                    { extend: "excel", className: "btn btn-success" },
-                    {
-                        text: "Xabar yuborish", // Tugma matni
-                        className: "btn btn-outline-success",
-                        action: function () {
-                            // Modalni ko'rsatish
-                            $('#samedata-modal').modal('show');
-                        }
-                    },                     
-                    {
-                        text: "O'quvchi qo'shish", // Tugma matni
-                        className: "btn btn-outline-success",
-                        action: function () {
-                            // Modalni ko'rsatish
-                            $('#vertical-center-modal').modal('show');
-                        }
-                    },
-                    {
-                        text: "O'quvchi chetlashtirish", // Tugma matni
-                        className: "btn btn-outline-success",
-                        action: function () {
-                            // Modalni ko'rsatish
-                            $('#chetlashtirish').modal('show');
-                        }
-                    }
-                ],
-                pageLength: 10
-            });
-        });
-        $(document).ready(function () {
-            $('#file_export').DataTable({
-                dom: "Bfrtip",
-                buttons: [
-                    { extend: "excel", className: "btn btn-success" }
-                ],
-                pageLength: 10
-            });
-        });
     </script>
 {% endblock content %}
 
