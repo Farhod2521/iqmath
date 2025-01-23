@@ -282,36 +282,65 @@ saralash
     
     <script>
 
-document.getElementById('studentCountForm').addEventListener('submit', async function (event) {
-    event.preventDefault(); // Formni avtomatik yuborishni to‘xtatadi
 
-    // Kiritilgan qiymatni olish
-    const studentCount = document.getElementById('studentCountInput').value;
 
-    // Ma'lumotlarni PUT so‘rovi orqali yuborish
-    try {
-      const response = await fetch('https://jetmind.uz/api/v1/quiz/result_filter_student_count/1/', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          count: parseInt(studentCount, 10), // Kiritilgan sonni JSON shaklida yuborish
-        }),
-      });
+// API URL
+const pass_exam_counts = 'https://jetmind.uz/api/v1/quiz/result_filter_student_count/1/';
 
-      // Javobni qayta ishlash
-      if (response.ok) {
-    
-        window.location.reload(); // Sahifani yangilash
-      } else {
-        const errorData = await response.json();
-        alert('Xatolik: ' + JSON.stringify(errorData));
-      }
-    } catch (error) {
-      alert('Xatolik yuz berdi: ' + error.message);
+// Sahifa yuklanishi bilan GET so'rov
+async function fetchStudentCount() {
+  try {
+    const response = await fetch(pass_exam_counts
+);
+    if (response.ok) {
+      const data = await response.json();
+      // Oldingi qiymatni input ichiga qo'yish
+      document.getElementById('studentCountInput').value = data.count;
+    } else {
+      console.error('Xatolik: GET so‘rov muvaffaqiyatsiz bo‘ldi.');
     }
-  });
+  } catch (error) {
+    console.error('Xatolik yuz berdi:', error);
+  }
+}
+
+// Sahifa yuklanganda fetchStudentCount funksiyasini chaqirish
+document.addEventListener('DOMContentLoaded', fetchStudentCount);
+
+// Form yuborilganda PUT so‘rov
+document.getElementById('studentCountForm').addEventListener('submit', async function (event) {
+  event.preventDefault(); // Formni avtomatik yuborishni to‘xtatadi
+
+  // Inputdagi qiymatni olish
+  const studentCount = document.getElementById('studentCountInput').value;
+
+  // PUT so‘rov yuborish
+  try {
+    const response = await fetch(pass_exam_counts
+, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        count: parseInt(studentCount, 10), // JSON orqali sonni yuborish
+      }),
+    });
+
+    if (response.ok) {
+      // Sahifani yangilash
+      window.location.reload();
+    } else {
+      const errorData = await response.json();
+      alert('Xatolik: ' + JSON.stringify(errorData));
+    }
+  } catch (error) {
+    alert('Xatolik yuz berdi: ' + error.message);
+  }
+});
+
+
+
 
 // API URLs
 const students = "https://jetmind.uz/api/v1/student/student_list/";
