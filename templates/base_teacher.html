@@ -224,9 +224,8 @@
                    
                         </div>
                         <div class="d-grid py-4 px-7 pt-8">
-                   
-                          <a href="/" class="btn btn-outline-primary">Log Out</a>
-                        </div>
+                          <a href="#" class="btn btn-outline-primary" id="logoutButton">Log Out</a>
+                      </div>
                       </div>
                     </div>
                   </li>
@@ -692,6 +691,16 @@
 
 
           <script>
+            document.getElementById("logoutButton").addEventListener("click", function(event) {
+    event.preventDefault(); // Standart havolani to'xtatish
+
+    // SessionStorage'dagi tokenlarni o'chirish
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('expires_in');
+
+    // Foydalanuvchini login sahifasiga yo'naltirish
+    window.location.href = '/teacher_login';
+});
        const sidebarLinks = document.querySelectorAll('.sidebar-link');
         const currentPath = window.location.pathname.replace(/\/$/, ''); // Oxirgi '/'ni olib tashlaymiz
 

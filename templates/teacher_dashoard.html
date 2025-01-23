@@ -43,42 +43,48 @@
 
 
 window.onload = function() {
-    // LocalStorage'dan access_token va expires_in ni olish
-    const accessToken = localStorage.getItem('access_token');
-    const expiresIn = localStorage.getItem('expires_in');
-    console.log('access_token:', accessToken);
-    console.log('expires_in:', expiresIn);
+    const accessToken = sessionStorage.getItem('access_token');
+    const expiresIn = sessionStorage.getItem('expires_in');
+    const currentTime = new Date().getTime(); // Hozirgi vaqtni oling (millisekunda)
 
-    // Agar access_token yoki expires_in mavjud bo'lmasa, login sahifasiga o'tish
+    console.log('Access Token:', accessToken);
+    console.log('Expires In:', expiresIn);
+
     if (!accessToken || !expiresIn) {
-        console.log('Access token yoki expires_in mavjud emas. Login sahifasiga o\'ting.');
+        console.log('Token yoki muddati mavjud emas. Login sahifasiga o\'tkaziladi.');
         window.location.href = '/teacher_login';
         return;
     }
 
-    // expires_in ni millisekundaga aylantirish
-    const tokenExpirationTime = new Date(Number(expiresIn) * 1000); // expires_in ni millisekundaga aylantirish
-    const currentTime = new Date(); // Joriy vaqt
+    // Token muddati tekshiriladi
+    if (currentTime > Number(expiresIn)) {
+        console.log('Token muddati tugagan. Logout qilinmoqda.');
 
-    // Agar token muddati tugagan bo'lsa, foydalanuvchini logout qilish
-    if (currentTime > tokenExpirationTime) {
-        console.log('Token muddati tugagan. Logout qilinadi.');
+        // Tokenni o'chirish
+        sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem('expires_in');
 
-        // Token muddati tugagan bo'lsa, logout
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('expires_in');
-        localStorage.removeItem('login');
-        localStorage.removeItem('password');
-
-        // Login sahifasiga o'tkazish
-        window.location.href = '/login';
+        // Login sahifasiga yo'naltirish
+        window.location.href = '/teacher_login';
     } else {
         console.log('Token yaroqli: ', accessToken);
     }
 
-    // Sayt ochilganda modalni avtomatik ko'rsatish
+    // Foydalanuvchi malumotlarini modaldan ko'rsatish funksiyasi
     showCredentialsInModal();
 };
+
+// Ma'lumotlarni modalda ko'rsatish uchun funksiya
+function showCredentialsInModal() {
+    const accessToken = sessionStorage.getItem('access_token');
+    const modalBody = document.getElementById('credentialsModalBody');
+    if (modalBody) {
+        modalBody.innerHTML = `
+            <p><strong>Access Token:</strong> ${accessToken}</p>
+            <p><strong>Muddati tugash vaqti:</strong> ${new Date(Number(sessionStorage.getItem('expires_in'))).toLocaleString()}</p>
+        `;
+    }
+}
 
 // Modalga login va parolni chiqarish
 function showCredentialsInModal() {

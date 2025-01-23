@@ -201,10 +201,10 @@
 document.getElementById("loginForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    let phone = document.getElementById('loginPhone').value;
-    // Add '998' if the phone number doesn't start with it
+    let phone = document.getElementById('loginPhone').value.trim();
+    // '998' raqami qo'shiladi agar kiritilmagan bo'lsa
     if (!phone.startsWith('998')) {
-        phone = '998' + phone.replace(/\s+/g, ''); // Remove spaces
+        phone = '998' + phone.replace(/\s+/g, ''); // Bo'sh joylarni olib tashlash
     }
     const password = document.getElementById("exampleInputPassword1").value;
 
@@ -223,39 +223,43 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     .then(response => response.json())
     .then(data => {
         if (data.status === true) {
-            // Save access token
-            sessionStorage.setItem("access_token", data.access_token);
+            // Token va token muddati saqlanadi
+            const currentTime = new Date().getTime(); // Hozirgi vaqt
+            const expiresInMs = data.expires_in * 1000; // Soniyadan millisekundga
 
-            // Calculate access_token_time (3 hours from now)
-            const accessTokenTime = new Date().getTime() + (3 * 60 * 60 * 1000); // 3 hours in milliseconds
-            sessionStorage.setItem("access_token_time", accessTokenTime);
+            sessionStorage.setItem("access_token", data.access_token);
+            sessionStorage.setItem("expires_in", currentTime + expiresInMs); // Qachon tugashi
+
+            // Muvaffaqiyatli xabar ko'rsatiladi
             const alertElement = document.getElementById("success-alert");
             alertElement.classList.remove("hide");
             alertElement.style.display = "block";
 
-            // Automatically hide after 5 seconds
+            // Xabarni avtomatik yashirish
             setTimeout(() => {
                 alertElement.classList.add("hide");
                 alertElement.style.display = "none";
             }, 5000);
+
+            // Dashboard sahifasiga yo'naltirish
             window.location.href = "/teachers_dashboard";
         } else {
-        // Show error message
-        const errorMessage = document.getElementById("error-message");
-        errorMessage.style.display = "block";
+            // Xatolikni ko'rsatish
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.textContent = "Login yoki parol noto'g'ri!";
+            errorMessage.style.display = "block";
 
-        // Hide error message after 5 seconds (optional)
-        setTimeout(() => {
-            errorMessage.style.display = "none";
-        }, 5000);
-    }
+            // Xabarni avtomatik yashirish
+            setTimeout(() => {
+                errorMessage.style.display = "none";
+            }, 5000);
+        }
     })
     .catch(error => {
         console.error("Error:", error);
-        alert("An error occurred. Please try again.");
+        alert("Xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
     });
 });
-
 ////////////////////////
 ////////////////////// REGISTER
 ////////////////////////
