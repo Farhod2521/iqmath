@@ -382,6 +382,15 @@ class Results_EXAM_View(APIView):
 
 
 class UpdatePassExamStudentAPIView(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        # Modeldan kerakli obyektni olish
+        student = get_object_or_404(Pass_Exam_Student, pk=pk)
+
+        # Faqat `count` qiymatini qaytarish
+        return Response({
+            'count': student.count
+        }, status=status.HTTP_200_OK)
+
     def put(self, request, pk, *args, **kwargs):
         # Modeldan kerakli obyektni olish
         student = get_object_or_404(Pass_Exam_Student, pk=pk)
@@ -404,7 +413,6 @@ class UpdatePassExamStudentAPIView(APIView):
             return Response({
                 'error': 'Invalid count value. It must be a positive integer.'
             }, status=status.HTTP_400_BAD_REQUEST)
-
 
     
 class Pass_Exam_UpdateResultStatusAPIView(APIView):
