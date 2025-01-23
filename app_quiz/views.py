@@ -350,19 +350,13 @@ class Results_EXAM_View(APIView):
                     "test_time": result.test_time,
                 })
 
-        # Sort data by score (descending) and test_time (ascending)
         sorted_data = sorted(data, key=lambda x: (-x["score"], x["test_time"]))
 
-        # Fetch the count value from Pass_Exam_Student model
+   
         pass_exam_count = Pass_Exam_Student.objects.first().count if Pass_Exam_Student.objects.exists() else 300
 
-        # Return the count value along with sorted data
-        response_data = {
-            "count": pass_exam_count,
-            "results": sorted_data[:pass_exam_count],  # Include the top results based on count
-        }
 
-        return Response(response_data)
+        return Response(sorted_data[:pass_exam_count])
 
 
 
