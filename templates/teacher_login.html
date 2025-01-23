@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+{% load static  %}
+<html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon icon-->
+  <link rel="shortcut icon" type="image/png" href="{% static 'assets/images/logos/favicon.png' %}" />
+
+  <!-- Core Css -->
+  <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" rel="stylesheet">
+  <title>Modernize Bootstrap Admin</title>
+</head>
+
+<body>
+  <!-- Preloader -->
+
+  <style>
+   
+    #phoneNumber {
+        width: 100% !important; 
+    }
+    .iti {
+        width: 100% !important; 
+    }
+
+
+    #success-alert {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1050; /* Bootstrap alerts ustida bo'lishi uchun */
+  display: none; /* Defaultda yashiringan bo'ladi */
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+</style>
+
+
+  <div class="preloader">
+    <img src="{% static 'assets/images/logos/favicon.png' %}" alt="loader" class="lds-ripple img-fluid" />
+  </div>
+
+  <div id="main-wrapper" class="auth-customizer-none">
+
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 w-100 d-flex align-items-center justify-content-center" style="background-image: url({% static 'assets/images/backgrounds/bacground.png' %});">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-3 auth-card">
+            <div class="card mb-0">
+              <div class="card-body">
+                <div class="brand-logo" style="display: flex; align-items: center; justify-content: center; ">
+                    <a href="" class="text-nowrap logo-img">
+                      <h4 style="font-size: 38px; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; text-align: center; margin: 0;">
+                        ADMIN
+                      </h4>
+                    </a>
+                  </div>
+        
+               
+          
+
+                  <div class="tab-content border mt-2">
+                  <div class="tab-pane active p-3" id="navpill-11" role="tabpanel">
+                    <div class="row">
+                    
+                      <div class="col-md-12">
+                        <div id="error-message" style="text-align: center; display: none;">
+                          <p style="color: red;">Telfon raqam yoki parol xato !!!</p>
+                        </div>
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginPhone" class="form-label">Telefon raqam</label>
+                                <input type="text" class="form-control" maxlength="12" placeholder="91 581 21 09" id="loginPhone">
+                            </div>
+                            <div class="mb-4">
+                                <label for="exampleInputPassword1" class="form-label">Parol</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1">
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
+                                    <label class="form-check-label text-dark" for="flexCheckChecked">
+                                        Eslab qolsin
+                                    </label>
+                                </div>
+                                <a class="text-primary fw-medium" href="../main/authentication-forgot-password.html">Parolni unitdingizmi ?</a>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Kirish</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane p-3" id="navpill-33" role="tabpanel">
+                    <div class="row">
+                  
+                      <div class="col-md-12">
+                        <div id="register-error-message" style="text-align: center; display: none;">
+                       
+                          
+                        </div>
+                        <form id="registrationForm">
+                        
+                            <div class="mb-3">
+                              <label for="exampleInputEmail1" class="form-label">F.I.SH</label>
+                              <input type="text" class="form-control" id="exampleInputtext" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="Email" class="form-label">Email</label>
+                              <input type="email" class="form-control" id="Email" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="registerPhone" class="form-label">Telefon raqam</label>
+                              <input type="text" class="form-control" maxlength="12" placeholder="91 581 21 09" id="registerPhone" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="birthday" class="form-label">Tug'ilgan kun</label>
+                              <input type="date" class="form-control" id="birthday" min="2005-01-01" max="2010-12-31" required>
+                            </div>
+                          
+                            <div class="mb-3">
+                              <label for="Viloyat" class="form-label">Viloyat</label>
+                              <select class="form-select" id="provinceSelect" aria-label="Viloyat tanlang" required>
+                                <option selected disabled>Viloyatni tanlang</option>
+                                <!-- Viloyatlar bo'sh joyga kiritiladi -->
+                              </select>
+                            </div>
+                          
+                            <div class="mb-3">
+                              <label for="Tuman" class="form-label">Tuman</label>
+                              <select class="form-select" id="districtSelect" aria-label="Tuman tanlang" required>
+                                <option selected disabled>Tumanni tanlang</option>
+                              </select>
+                            </div>
+                            <div class="mb-3">
+                              <label for="Address" class="form-label">Manzil</label>
+                              <input type="text" class="form-control" id="Address" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="maktab_or" class="form-label">Ta'lim dargohi</label>
+                              <select class="form-select" id="educationSelect" required>
+                                <option selected disabled>Ta'lim dargohi tanlang</option>
+                                <option value="litsey">Litsey</option>
+                                <option value="maktab">Maktab</option>
+                              </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                              <label for="courseSelect" class="form-label">Kurs tanlang</label>
+                              <select class="form-select" id="courseSelect" required>
+                                <option selected disabled>Kursni tanlang</option>
+                                <option value="10-A">10-A</option>
+                                <option value="10-B">10-B</option>
+                                <!-- Kurslar bo'sh joyga kiritiladi -->
+                              </select>
+                            </div>
+                          
+                            <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2"   id="ts-success">Ro'yhatdan o'tish</button>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+
+                  <div id="toast-bottom-full-width" class="toast-container toastr toast-bottom-full-width"  ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="success-alert" class="alert customize-alert alert-dismissible text-success rounded-pill alert-light-success bg-success-subtle text-success fade hide" role="alert">
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="d-flex align-items-center me-3 me-md-0">
+        <i class="ti ti-info-circle fs-5 me-2 text-success"></i>
+        A simple success outline alert
+      </div>
+    </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+  <script>
+
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let phone = document.getElementById('loginPhone').value;
+    // Add '998' if the phone number doesn't start with it
+    if (!phone.startsWith('998')) {
+        phone = '998' + phone.replace(/\s+/g, ''); // Remove spaces
+    }
+    const password = document.getElementById("exampleInputPassword1").value;
+
+    const data = {
+        phone: phone,
+        password: password
+    };
+
+    fetch("https://jetmind.uz/api/v1/student/login/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === true) {
+            // Save access token
+            sessionStorage.setItem("access_token", data.access_token);
+
+            // Calculate access_token_time (3 hours from now)
+            const accessTokenTime = new Date().getTime() + (3 * 60 * 60 * 1000); // 3 hours in milliseconds
+            sessionStorage.setItem("access_token_time", accessTokenTime);
+            const alertElement = document.getElementById("success-alert");
+            alertElement.classList.remove("hide");
+            alertElement.style.display = "block";
+
+            // Automatically hide after 5 seconds
+            setTimeout(() => {
+                alertElement.classList.add("hide");
+                alertElement.style.display = "none";
+            }, 5000);
+            window.location.href = "/teachers_dashboard";
+        } else {
+        // Show error message
+        const errorMessage = document.getElementById("error-message");
+        errorMessage.style.display = "block";
+
+        // Hide error message after 5 seconds (optional)
+        setTimeout(() => {
+            errorMessage.style.display = "none";
+        }, 5000);
+    }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+    });
+});
+
+////////////////////////
+////////////////////// REGISTER
+////////////////////////
+    document.getElementById('registrationForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Formani jo'natishni to'xtatish
+
+        let phone = document.getElementById('registerPhone').value;
+        // Agar telefon raqam oldida '998' bo'lmasa, uni qo'shamiz
+        if (!phone.startsWith('998')) {
+            phone = '998' + phone.replace(/\s+/g, ''); // Bo'sh joylarni olib tashlash
+        }
+
+        const formData = {
+            full_name: document.getElementById('exampleInputtext').value,
+            email: document.getElementById('Email').value,
+            phone: phone, // To'g'irlangan telefon raqam
+            region: document.getElementById('provinceSelect').selectedOptions[0].textContent, // name saqlash
+            districts: document.getElementById('districtSelect').selectedOptions[0].textContent, // name saqlash
+            address: document.getElementById('Address').value,
+            brithday: document.getElementById('birthday').value,
+            academy_or_school: document.getElementById('educationSelect').value,
+            class_name: document.getElementById('courseSelect').value
+        };
+
+        // Serverga so'rov yuborish
+        fetch('https://jetmind.uz/api/v1/student/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(response => response.json())
+            .then((data) => {
+              if (data.message === "Telefon raqamga SMS kodi yuborildi. Kodni tasdiqlang.") {
+                console.log('Success:', data);
+                // Telefon raqamni localStorage'da saqlash
+                localStorage.setItem('phone', phone);
+                // Muvaffaqiyatli sahifaga o'tish
+                window.location.href = '/sms_code';
+                toastr.success('Ro\'yhatdan o\'tdingiz!', 'Muvaffaqiyat');
+              } else {
+                // Show error message
+                const errorMessage = document.getElementById("register-error-message");
+                errorMessage.style.display = "block";
+                errorMessage.innerHTML = `<p style="color: red;">${data.errors.phone[0]}</p>`;
+
+                // Hide error message after 5 seconds (optional)
+                setTimeout(() => {
+                    errorMessage.style.display = "none";
+                }, 5000);
+              }
+
+            })
+
+    
+    });
+
+
+
+    ///////////////////////////
+    //////////////////////////  KURSNI TANLANG 
+    /////////////////////////
+    document.getElementById('educationSelect').addEventListener('change', function(event) {
+        const selectedValue = event.target.value;
+        const courseSelect = document.getElementById('courseSelect');
+
+        courseSelect.innerHTML = '<option selected disabled>Kursni tanlang</option>';
+        
+        courseSelect.disabled = false;
+        if (selectedValue === 'litsey') {
+            // Litsey uchun kurslar
+            const litseyCourses = ['1-kurs', '2-kurs', '3-kurs'];
+            litseyCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseSelect.appendChild(option);
+            });
+        } else if (selectedValue === 'maktab') {
+            // Maktab uchun kurslar
+            const maktabCourses = ['10-sinf', '11-sinf'];
+            maktabCourses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course;
+                option.textContent = course;
+                courseSelect.appendChild(option);
+            });
+        }
+    });
+   ///
+   ///       VILOYAT TUMAN 
+   ///
+    fetch('{% static "assets/js/viloyat_tuman.json" %}')
+        .then(response => response.json())
+        .then(data => {
+            // Populate the province dropdown
+            const provinceSelect = document.getElementById('provinceSelect');
+            data.regions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region.id;
+                option.textContent = region.name;
+                provinceSelect.appendChild(option);
+            });
+
+            // Add event listener to update district options when a province is selected
+            provinceSelect.addEventListener('change', (event) => {
+                const selectedRegionId = event.target.value;
+                const districtSelect = document.getElementById('districtSelect');
+
+                // Clear previous district options
+                districtSelect.innerHTML = '<option selected disabled>Tumanni tanlang</option>';
+
+                // Populate the district dropdown based on the selected province
+                data.districts.forEach(district => {
+                    if (district.region_id == selectedRegionId) {
+                        const option = document.createElement('option');
+                        option.value = district.id;
+                        option.textContent = district.name;
+                        districtSelect.appendChild(option);
+                    }
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching the viloyat_tuman.json:', error);
+        });
+
+
+
+
+
+
+
+
+
+
+
+    // Ro'yhatdan o'tish uchun telefon raqam inputini o'rnatish
+    const registerPhoneInput = document.querySelector("#registerPhone");
+    const registerIti = intlTelInput(registerPhoneInput, {
+        initialCountry: "uz", // O'zbekistonni standart sifatida o'rnatadi
+        onlyCountries: ["uz"], // Faqat O'zbekistonni ko'rsatadi
+        separateDialCode: true, // +998 alohida ko'rinadi
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Formatlash uchun kerak
+    });
+
+    // Login uchun telefon raqam inputini o'rnatish
+    const loginPhoneInput = document.querySelector("#loginPhone");
+    const loginIti = intlTelInput(loginPhoneInput, {
+        initialCountry: "uz", // O'zbekistonni standart sifatida o'rnatadi
+        onlyCountries: ["uz"], // Faqat O'zbekistonni ko'rsatadi
+        separateDialCode: true, // +998 alohida ko'rinadi
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // Formatlash uchun kerak
+    });
+
+    // Telefon raqamni formatlash
+    function formatPhoneInput(input) {
+        input.addEventListener("input", function (e) {
+            let value = e.target.value.replace(/\D/g, ""); // Faqat raqamlarni oladi
+            if (value.length > 9) value = value.slice(0, 9); // Maksimal 9 raqamga ruxsat beradi
+
+            // Raqamni formatlash
+            const formattedValue = value
+                .replace(/(\d{2})(\d{3})?(\d{2})?(\d{2})?/, (match, p1, p2, p3, p4) => {
+                    return [p1, p2, p3, p4].filter(Boolean).join(" ");
+                });
+
+            e.target.value = formattedValue; // Formatlangan qiymatni inputga o'rnatadi
+        });
+    }
+
+    // Formatlashni har ikkala input uchun qo'llash
+    formatPhoneInput(registerPhoneInput);
+    formatPhoneInput(loginPhoneInput);
+</script>
+<script src="{% static 'assets/js/plugins/tttttttt.js' %}"></script>
+  <script src="{% static 'assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js'  %}"></script>
+  <script src="{% static 'assets/libs/simplebar/dist/simplebar.min.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/app.init.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/theme.js'  %}"></script>
+  <script src="{% static 'assets/js/theme/app.min.js'  %}"></script>
+
+  <!-- solar icons -->
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+  
+</body>
+
+</html>
