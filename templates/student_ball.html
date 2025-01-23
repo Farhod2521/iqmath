@@ -257,7 +257,53 @@
     
     <script>
 
+        const student_all = "https://jetmind.uz/api/v1/quiz/result_add_student/";
 
+        // Fetch data from API and populate the table
+        fetch(student_all)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector("#all_students tbody");
+
+                // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+                if ($.fn.DataTable.isDataTable('#all_students')) {
+                    $('#all_students').DataTable().clear().destroy();
+                }
+
+                // Ma'lumotlarni qo'shish
+                data.forEach((item, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${index + 1}</td>  <!-- Indeks raqamini qo'shish -->
+                        <td>${item.full_name}</td>
+                        <td>${item.region}</td>
+                        <td>${item.districts}</td>
+                        <td>${item.academy_or_school}</td>
+                        <td>${item.class_name}</td>
+                        <td>${item.brithday}</td>
+                        <td>${item.phone}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // DataTable-ni qayta ishga tushirish
+                $('#all_students').DataTable({
+                    dom: "Bfrtip",
+                    pageLength: -1,
+                    buttons: [
+                        {
+                            extend: "excel",
+                            className: "btn btn-success",
+                            customize: function (xlsx) {
+                                const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                $('row c[r="A1"]', sheet).text('Talabalar ro\'yhati'); // Excelda ustun sarlavhasini o'zgartirish
+                            }
+                        }
+                    ],
+                    pageLength: 10,
+                });
+            })
+            .catch(error => console.error("Error fetching data:", error));
 
     // API URL for "result_pass_exam"
     const pass_exam_url = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
