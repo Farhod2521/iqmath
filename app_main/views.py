@@ -36,6 +36,11 @@ def result_student(request):
 
 
 
+
 ################################   TEACHERS #########################################
 def  teachers_dashboard(request):
     return render(request, "teacher_dashoard.html")
+
+
+def  students_ball_teacher(request):
+    return render(request, "student_ball.html")

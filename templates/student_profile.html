@@ -72,7 +72,7 @@
                 </div>
               </div>
               <div class="text-center">
-                <h5 class="mb-0">Mathew Anderson</h5>
+                <h5 class="mb-0" id="#full-name">Mathew Anderson</h5>
                 <p class="mb-0">Designer</p>
               </div>
             </div>
@@ -729,7 +729,10 @@ document.documentElement.setAttribute("data-color-theme", e);
 
 
 
-
+<script>
+  const fullName = localStorage.getItem('FULL_NAME');
+  document.getElementById('full-name').textContent = fullName || 'No Name';
+</script>
 
 
 

@@ -64,14 +64,7 @@ class Result(models.Model):
     correct_answers = models.PositiveIntegerField()
     start_time = models.DateTimeField(auto_now_add=True)
     test_time = models.PositiveIntegerField()  # Necha minut ishlagan vaqt sifatida saqlanadi
-    status = models.CharField(
-        max_length=20,
-        choices=[
-            ('passed', 'Passed'),
-            ('failed', 'Failed'),
-        ],
-        default='failed'
-    )
+    status_exam = models.BooleanField()
     correct_questions = models.JSONField(default=list)  # To'g'ri javoblar (savollarni id-lari bilan)
     incorrect_questions = models.JSONField(default=list)  # Xato javoblar (savollarni id-lari bilan)
     random_score = models.JSONField(default=dict)  # Random savollar va ularga tegishli ballar
