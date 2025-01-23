@@ -52,7 +52,7 @@ window.onload = function() {
     // Agar access_token yoki expires_in mavjud bo'lmasa, login sahifasiga o'tish
     if (!accessToken || !expiresIn) {
         console.log('Access token yoki expires_in mavjud emas. Login sahifasiga o\'ting.');
-        window.location.href = '/login';
+        window.location.href = '/teacher_login';
         return;
     }
 
