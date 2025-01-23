@@ -384,7 +384,7 @@ class Pass_Exam_UpdateResultStatusAPIView(APIView):
             return Response({"detail": "Result not found."}, status=status.HTTP_404_NOT_FOUND)
 
         # Serializerni request ma'lumotlari bilan yangilaymiz
-        serializer = ResultSerializer(result, data=request.data, partial=True)
+        serializer = Pass_Exam_ResultSerializer(result, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
