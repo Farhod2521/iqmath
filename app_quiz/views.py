@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Science, Quiz, Result, Result_Telegram_Bot
+from .models import Science, Quiz, Result, Result_Telegram_Bot, Pass_Exam_Student
 from .serializers import (
     ScienceSerializer, QuizSerializer, ResultSerializer,Result_Telegram_Bot_Serializers, 
     Quiz_Add_Serializers, Result_Telegram_Serializers )
@@ -336,7 +336,7 @@ class Results_EXAM_View(APIView):
         data = []
 
         for student in students:
-            results = Result.objects.filter(student=student, status_exam=True)
+            results = Result.objects.filter(student=student, status_exam__in=[None, True])
             for result in results:
                 data.append({
                     "full_name": student.full_name,
@@ -352,10 +352,16 @@ class Results_EXAM_View(APIView):
         # Sort data by score (descending) and test_time (ascending)
         sorted_data = sorted(data, key=lambda x: (-x["score"], x["test_time"]))
 
-        # Get top 5 results
-        top_5_results = sorted_data[:5]
+        # Fetch the count value from Pass_Exam_Student model
+        pass_exam_count = Pass_Exam_Student.objects.first().count if Pass_Exam_Student.objects.exists() else 300
 
-        return Response(top_5_results)
+        # Return the count value along with sorted data
+        response_data = {
+            "count": pass_exam_count,
+            "results": sorted_data[:pass_exam_count],  # Include the top results based on count
+        }
+
+        return Response(response_data)
 
 
 

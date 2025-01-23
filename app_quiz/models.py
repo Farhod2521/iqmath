@@ -80,6 +80,9 @@ class Result(models.Model):
 
 
 
+class Pass_Exam_Student(models.Model):
+    count =  models.PositiveIntegerField(default=300)
+
 class Result_Telegram_Bot(models.Model):
     phone = models.CharField(max_length=200)
     telegram_id = models.PositiveIntegerField()
