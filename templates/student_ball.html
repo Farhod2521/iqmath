@@ -196,7 +196,9 @@
                                     </tr>
                                     <!-- end row -->
                                   </thead>
-                          
+                                  <tbody id="pass_exam_table_body">
+                                    <!-- Data will be inserted here dynamically -->
+                                </tbody>
                                 </table>
                               </div>
                        
@@ -211,7 +213,7 @@
                             
                               <div class="table-responsive">
                                 <table id="all_students" class="table w-100 table-striped table-bordered display text-nowrap">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             <th>№</th>
                                             <th>F.I.SH</th>
@@ -221,10 +223,9 @@
                                             <th>Kursi</th>
                                             <th>Tug'ilgan kuni</th>
                                             <th>Telefon raqam</th>
-                                        
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="students_table_body">
                                         <!-- Data will be inserted here dynamically -->
                                     </tbody>
                                 </table>
@@ -257,73 +258,74 @@
     
     <script>
 
-        const student_all = "https://jetmind.uz/api/v1/quiz/result_add_student/";
+// API URLs
+const students = "https://jetmind.uz/api/v1/quiz/result_add_student/";
+const pass_exam_url = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
+const apiUrl = "https://jetmind.uz/api/v1/quiz/result_all/";
 
-        // Fetch data from API and populate the table
-        fetch(student_all)
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector("#all_students tbody");
+// Fetch and populate "all_students" table
+fetch(students)
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector("#all_students tbody");
 
-                // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
-                if ($.fn.DataTable.isDataTable('#all_students')) {
-                    $('#all_students').DataTable().clear().destroy();
-                }
+        // Clear existing DataTable and reset content
+        if ($.fn.DataTable.isDataTable("#all_students")) {
+            $("#all_students").DataTable().clear().destroy();
+        }
 
-                // Ma'lumotlarni qo'shish
-                data.forEach((item, index) => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${index + 1}</td>  <!-- Indeks raqamini qo'shish -->
-                        <td>${item.full_name}</td>
-                        <td>${item.region}</td>
-                        <td>${item.districts}</td>
-                        <td>${item.academy_or_school}</td>
-                        <td>${item.class_name}</td>
-                        <td>${item.brithday}</td>
-                        <td>${item.phone}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+        // Populate table rows
+        tableBody.innerHTML = ""; // Clear old rows
+        data.forEach((item, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.full_name}</td>
+                    <td>${item.region}</td>
+                    <td>${item.districts}</td>
+                    <td>${item.academy_or_school}</td>
+                    <td>${item.class_name}</td>
+                    <td>${item.brithday}</td>
+                    <td>${item.phone}</td>
+                </tr>`;
+            tableBody.innerHTML += row;
+        });
 
-                // DataTable-ni qayta ishga tushirish
-                $('#all_students').DataTable({
-                    dom: "Bfrtip",
-                    pageLength: -1,
-                    buttons: [
-                        {
-                            extend: "excel",
-                            className: "btn btn-success",
-                            customize: function (xlsx) {
-                                const sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                $('row c[r="A1"]', sheet).text('Talabalar ro\'yhati'); // Excelda ustun sarlavhasini o'zgartirish
-                            }
-                        }
-                    ],
-                    pageLength: 10,
-                });
-            })
-            .catch(error => console.error("Error fetching data:", error));
+        // Initialize DataTable
+        $("#all_students").DataTable({
+            dom: "Bfrtip",
+            buttons: [
+                {
+                    extend: "excel",
+                    className: "btn btn-success",
+                    customize: function (xlsx) {
+                        const sheet = xlsx.xl.worksheets["sheet1.xml"];
+                        $('row c[r="A1"]', sheet).text("Talabalar ro'yhati");
+                    },
+                },
+            ],
+            pageLength: 10,
+        });
+    })
+    .catch(error => console.error("Error fetching students data:", error));
 
-    // API URL for "result_pass_exam"
-    const pass_exam_url = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
+// Fetch and populate "file_export_telegram" table
+fetch(pass_exam_url)
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector("#file_export_telegram tbody");
 
-    // Fetch data from API and populate the table
-    fetch(pass_exam_url)
-        .then(response => response.json())
-        .then(data => {
-            const tableBody = document.querySelector("#file_export_telegram tbody");
-            
-            // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
-            if ($.fn.DataTable.isDataTable('#file_export_telegram')) {
-                $('#file_export_telegram').DataTable().clear().destroy();
-            }
+        // Clear existing DataTable and reset content
+        if ($.fn.DataTable.isDataTable("#file_export_telegram")) {
+            $("#file_export_telegram").DataTable().clear().destroy();
+        }
 
-            // Ma'lumotlarni qo'shish
-            data.forEach((item, index) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${index + 1}</td>  <!-- Indeks raqamini qo'shish -->
+        // Populate table rows
+        tableBody.innerHTML = ""; // Clear old rows
+        data.forEach((item, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
                     <td>${item.full_name}</td>
                     <td>${item.region}</td>
                     <td>${item.brithday}</td>
@@ -331,98 +333,95 @@
                     <td>${item.score}</td>
                     <td>${item.correct_answers} / ${item.total_questions}</td>
                     <td>${item.test_time} min</td>
-                `;
-                tableBody.appendChild(row);
-            });
+                </tr>`;
+            tableBody.innerHTML += row;
+        });
 
-            // DataTable-ni qayta ishga tushirish
-            $('#file_export_telegram').DataTable({
-                dom: "Bfrtip",
-                buttons: [
-                    { extend: "excel", className: "btn btn-success",  customize: function (xlsx) {
-                var sheet = xlsx.xl.worksheets['sheet1.xml']; // Excel-faylning 1-qatlamiga murojaat
-                $('row c[r="A1"]', sheet).text('Talabalar ro\'yhati'); // 1-qatorda "A1" xujayrani yangilash
-            } },
-                    {
-                        text: "Xabar yuborish", // Tugma matni
-                        className: "btn btn-outline-success",
-                        action: function () {
-                            // Modalni ko'rsatish
-                            $('#samedata-modal').modal('show');
-                        }
-                    },                     
-                    {
-                        text: "O'quvchi qo'shish", // Tugma matni
-                        className: "btn btn-outline-success",
-                        action: function () {
-                            // Modalni ko'rsatish
-                            $('#vertical-center-modal').modal('show');
-                        }
-                    },
-                    {
-                        text: "O'quvchi chetlashtirish", // Tugma matni
-                        className: "btn btn-outline-success",
-                        action: function () {
-                            // Modalni ko'rsatish
-                            $('#chetlashtirish').modal('show');
-                        }
-                    }
-                ],
-                pageLength: 10
-            });
-        })
-        .catch(error => console.error("Error fetching data:", error));
-
-    // API URL for "result_all"
-    const apiUrl = "https://jetmind.uz/api/v1/quiz/result_all/";
-
-    // Fetch data from API and populate the table
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const tableBody = document.querySelector("#file_export tbody");
-            
-            // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
-            if ($.fn.DataTable.isDataTable('#file_export')) {
-                $('#file_export').DataTable().clear().destroy();
-            }
-
-            // Ma'lumotlarni qo'shish
-            data.forEach((item, index) => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${index + 1}</td>  <!-- Indeks raqamini qo'shish -->
-                        <td>${item.full_name}</td>
-                        <td>${item.region}</td>
-                        <td>${item.brithday}</td>
-                        <td>${item.phone}</td>
-                        <td>${item.score}</td>
-                        <td>${item.correct_answers} / ${item.total_questions}</td>
-                        <td>${item.test_time} min</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-
-            // DataTable-ni qayta ishga tushirish
-            $('#file_export').DataTable({
-                dom: "Bfrtip",
-                buttons: [
-                    { extend: "excel", className: "btn btn-success",
+        // Initialize DataTable
+        $("#file_export_telegram").DataTable({
+            dom: "Bfrtip",
+            buttons: [
+                {
+                    extend: "excel",
+                    className: "btn btn-success",
                     customize: function (xlsx) {
-                var sheet = xlsx.xl.worksheets['sheet1.xml']; // Excel-faylning 1-qatlamiga murojaat
-                $('row c[r="A1"]', sheet).text('Talabalar ro\'yhati'); // 1-qatorda "A1" xujayrani yangilash
-            }
+                        const sheet = xlsx.xl.worksheets["sheet1.xml"];
+                        $('row c[r="A1"]', sheet).text("Pass Exam Results");
                     },
-                    
-                ],
-                pageLength: 10,
-                destroy: true // Eski DataTable'ni tozalash
-            });
-        })
-        .catch(error => console.error("Error fetching data:", error));
+                },
+                {
+                    text: "Xabar yuborish",
+                    className: "btn btn-outline-success",
+                    action: function () {
+                        $("#samedata-modal").modal("show");
+                    },
+                },
+                {
+                    text: "O'quvchi qo'shish",
+                    className: "btn btn-outline-success",
+                    action: function () {
+                        $("#vertical-center-modal").modal("show");
+                    },
+                },
+                {
+                    text: "O'quvchi chetlashtirish",
+                    className: "btn btn-outline-success",
+                    action: function () {
+                        $("#chetlashtirish").modal("show");
+                    },
+                },
+            ],
+            pageLength: 10,
+        });
+    })
+    .catch(error => console.error("Error fetching pass exam data:", error));
 
+// Fetch and populate "file_export" table
+fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+        const tableBody = document.querySelector("#file_export tbody");
 
+        // Clear existing DataTable and reset content
+        if ($.fn.DataTable.isDataTable("#file_export")) {
+            $("#file_export").DataTable().clear().destroy();
+        }
 
+        // Populate table rows
+        tableBody.innerHTML = ""; // Clear old rows
+        data.forEach((item, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.full_name}</td>
+                    <td>${item.region}</td>
+                    <td>${item.brithday}</td>
+                    <td>${item.phone}</td>
+                    <td>${item.score}</td>
+                    <td>${item.correct_answers} / ${item.total_questions}</td>
+                    <td>${item.test_time} min</td>
+                </tr>`;
+            tableBody.innerHTML += row;
+        });
+
+        // Initialize DataTable
+        $("#file_export").DataTable({
+            dom: "Bfrtip",
+            buttons: [
+                {
+                    extend: "excel",
+                    className: "btn btn-success",
+                    customize: function (xlsx) {
+                        const sheet = xlsx.xl.worksheets["sheet1.xml"];
+                        $('row c[r="A1"]', sheet).text("All Results");
+                    },
+                },
+            ],
+            pageLength: 10,
+            destroy: true,
+        });
+    })
+    .catch(error => console.error("Error fetching all results data:", error));
 
 
 
