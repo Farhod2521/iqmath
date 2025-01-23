@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Science, Quiz, Result, Result_Telegram_Bot
+from .models import Science, Quiz, Result, Result_Telegram_Bot, Pass_Exam_Student
 
-
+admin.site.register(Pass_Exam_Student)
 class Result_Telegram_Bot_Admin(admin.ModelAdmin):
     list_display = ("phone", "telegram_id")
 

@@ -1,10 +1,36 @@
 {% extends "base_teacher.html" %}
 {% load static %}
 {% block content %}
-   
+saralash
 
 
-
+<div class="modal fade" id="saralash" tabindex="-1" aria-labelledby="exampleModalLabel1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+                <h4 class="modal-title" id="exampleModalLabel1">Olimpiada uchun 1 dan  x  gacha ro'yhatni shakilantirish  </h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="">O'quvchi sonini kiriting</span>
+                        </div>
+                        <input type="number" class="form-control">
+                        
+                      </div>
+                      <div class="modal-footer">
+                
+                        <button type="button" class="btn btn-success">Yuborish</button>
+                    </div>
+                </form>
+            </div>
+    
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -368,6 +394,13 @@ fetch(pass_exam_url)
                     className: "btn btn-outline-success",
                     action: function () {
                         $("#chetlashtirish").modal("show");
+                    },
+                },
+                {
+                    text: "O'quvchilarni saralash",
+                    className: "btn btn-outline-success",
+                    action: function () {
+                        $("#saralash").modal("show");
                     },
                 },
             ],

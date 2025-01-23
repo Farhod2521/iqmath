@@ -4,7 +4,7 @@ from .views import (
     ScienceCreateAPIView, ScienceUpdateAPIView, ScienceDestroyAPIView,
     QuizCreateAPIView, Result_Telegram_Bot_CreateVIEW, Result_Telegram_Bot_ListView, 
     Get_Student_Result_By_TelegramID, ResultListView, Results_ALL_View, Results_EXAM_View,
-    Pass_Exam_UpdateResultStatusAPIView, Results_Add_View
+    Pass_Exam_UpdateResultStatusAPIView, Results_Add_View,UpdatePassExamStudentAPIView
 
 )
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('result_pass_exam/', Results_EXAM_View.as_view(), name='result_pass_exam'),
     path('result_pass_exam_status/', Pass_Exam_UpdateResultStatusAPIView.as_view(), name='result_pass_exam'),
     path('result_add_student/', Results_Add_View.as_view(), name='result_pass_exam'),
+    path('result_filter_student_count/<int:pk>/', UpdatePassExamStudentAPIView.as_view(), name='result_pass_exam'),
 
     #################################     TELEGRAM     ####################
     path('telegram_user/create/', Result_Telegram_Bot_CreateVIEW.as_view(), name='telegram_user'),
