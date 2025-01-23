@@ -78,13 +78,12 @@ if __name__ == '__main__':
 
 
 {
-    "student":1,
-    "quiz_id": 1,
+
     "answers": [
         {"quiz_id": 1, "answer": "A"},
         {"quiz_id": 2, "answer": "B"}
     ],
-    "end_time": "2025-01-12T12:00:00Z"
+    "test_time": "265"
 }
 
 from django.contrib.auth.models import User

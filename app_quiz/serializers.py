@@ -84,3 +84,10 @@ class Result_Telegram_Serializers(serializers.ModelSerializer):
     
     def get_science(self, obj):
         return obj.science.name
+    
+
+
+class Pass_Exam_ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = ['id', 'status_exam']

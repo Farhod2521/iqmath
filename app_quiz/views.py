@@ -4,7 +4,7 @@ from rest_framework import status
 from .models import Science, Quiz, Result, Result_Telegram_Bot, Pass_Exam_Student
 from .serializers import (
     ScienceSerializer, QuizSerializer, ResultSerializer,Result_Telegram_Bot_Serializers, 
-    Quiz_Add_Serializers, Result_Telegram_Serializers )
+    Quiz_Add_Serializers, Result_Telegram_Serializers, Pass_Exam_ResultSerializer )
 from app_customer.models import Student, User
 from rest_framework.permissions import IsAuthenticated
 import jwt
@@ -370,7 +370,24 @@ class Results_EXAM_View(APIView):
 
 
 
+class Pass_Exam_UpdateResultStatusAPIView(APIView):
+    
+    def patch(self, request, result_id):
+        try:
+            result = Result.objects.get(id=result_id)
+        except Result.DoesNotExist:
+            return Response({"detail": "Result not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # Serializerga request ma'lumotlarini va mavjud result obyekti bilan ta'minlaymiz
+        serializer = Pass_Exam_ResultSerializer(result, data=request.data, partial=True)
+
+        # Serializerni tekshiramiz
+        if serializer.is_valid():
+            serializer.save()  # Yangilanishni saqlaymiz
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # Agar serializer noto'g'ri bo'lsa
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
