@@ -328,7 +328,27 @@ class Results_ALL_View(APIView):
 
         return Response(data)
 
+class Results_Add_View(APIView):
+    def get(self, request, *args, **kwargs):
+        # Fetch all students
+        students = Student.objects.all()
+        data = []
+        for student in students:
+            results = Result.objects.filter(student=student, status_exam__in=False)
+            for result in results:
+                data.append({
+                    "id": result.id,
+                    "full_name": student.full_name,
+                    "region": student.region,
+                    "brithday": student.brithday,
+                    "phone": student.user.phone,
+                    "correct_answers": result.correct_answers,
+                    "total_questions": result.total_questions,
+                    "score": result.score,
+                    "test_time": result.test_time,
+                })
 
+        return Response(data)
 
 class Results_EXAM_View(APIView):
     def get(self, request, *args, **kwargs):
@@ -386,6 +406,10 @@ class Pass_Exam_UpdateResultStatusAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
 
 
 
