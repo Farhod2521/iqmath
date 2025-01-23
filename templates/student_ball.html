@@ -126,14 +126,20 @@
               <div class="card-body">
                 <!-- Nav tabs -->
                 <ul class="nav nav-pills flex-column flex-sm-row mt-4" role="tablist">
-                  <li class="nav-item flex-sm-fill text-sm-center">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#navpill-11" role="tab">
-                      <span>Barcha O'quvchilar</span>
+                   
+                      <li class="nav-item flex-sm-fill text-sm-center">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#navpill-11" role="tab">
+                      <span>Imtihon topshirgan o'quvchilar</span>
                     </a>
                   </li>
                   <li class="nav-item flex-sm-fill text-sm-center">
                     <a class="nav-link" data-bs-toggle="tab" href="#navpill-22" role="tab">
                       <span>Imtihondan o'tgan o'quvchilar</span>
+                    </a>
+                  </li>
+                  <li class="nav-item flex-sm-fill text-sm-center">
+                    <a class="nav-link" data-bs-toggle="tab" href="#navpill-33" role="tab">
+                      <span>Ro'yhatdan o'tgan o'quvchilar</span>
                     </a>
                   </li>
                
@@ -198,6 +204,35 @@
            
                     </div>
                   </div>
+                  <div class="tab-pane p-3" id="navpill-33" role="tabpanel">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                            
+                              <div class="table-responsive">
+                                <table id="all_students" class="table w-100 table-striped table-bordered display text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>F.I.SH</th>
+                                            <th>Viloyat</th>
+                                            <th>Tuman</th>
+                                            <th>O'quv dargohi</th>
+                                            <th>Kursi</th>
+                                            <th>Tug'ilgan kuni</th>
+                                            <th>Telefon raqam</th>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be inserted here dynamically -->
+                                    </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
            
                 </div>
               </div>
@@ -258,7 +293,10 @@
             $('#file_export_telegram').DataTable({
                 dom: "Bfrtip",
                 buttons: [
-                    { extend: "excel", className: "btn btn-success" },
+                    { extend: "excel", className: "btn btn-success",  customize: function (xlsx) {
+                var sheet = xlsx.xl.worksheets['sheet1.xml']; // Excel-faylning 1-qatlamiga murojaat
+                $('row c[r="A1"]', sheet).text('Talabalar ro\'yhati'); // 1-qatorda "A1" xujayrani yangilash
+            } },
                     {
                         text: "Xabar yuborish", // Tugma matni
                         className: "btn btn-outline-success",
@@ -323,7 +361,13 @@
             $('#file_export').DataTable({
                 dom: "Bfrtip",
                 buttons: [
-                    { extend: "excel", className: "btn btn-success" }
+                    { extend: "excel", className: "btn btn-success",
+                    customize: function (xlsx) {
+                var sheet = xlsx.xl.worksheets['sheet1.xml']; // Excel-faylning 1-qatlamiga murojaat
+                $('row c[r="A1"]', sheet).text('Talabalar ro\'yhati'); // 1-qatorda "A1" xujayrani yangilash
+            }
+                    },
+                    
                 ],
                 pageLength: 10,
                 destroy: true // Eski DataTable'ni tozalash

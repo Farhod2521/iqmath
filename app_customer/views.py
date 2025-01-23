@@ -55,7 +55,25 @@ class StudentProfileAPIView(APIView):
 
 
 
+class StudentsListView(APIView):
 
+
+    def get(self, request):
+        students = Student.objects.filter(status=True)  # Faqat `status=True` bo'lganlarni filterlaymiz
+        data = [
+            {
+                'full_name': student.full_name,
+                'phone': student.user.phone if hasattr(student.user, 'phone') else None,
+                'email': student.user.email if hasattr(student.user, 'email') else None,
+                'region': student.region,
+                'districts': student.districts,
+                'brithday': student.brithday,
+                'academy_or_school': student.academy_or_school,
+                'class_name': student.class_name,
+            }
+            for student in students
+        ]
+        return Response(data)
 
 
 
