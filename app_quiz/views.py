@@ -329,6 +329,35 @@ class Results_ALL_View(APIView):
 
 
 
+class Results_EXAM_View(APIView):
+    def get(self, request, *args, **kwargs):
+        # Fetch all students
+        students = Student.objects.filter(status__in=[None, True])  # Exclude students with status=False
+        data = []
+
+        for student in students:
+            results = Result.objects.filter(student=student)
+            for result in results:
+                data.append({
+                    "full_name": student.full_name,
+                    "region": student.region,
+                    "brithday": student.brithday,
+                    "phone": student.user.phone,
+                    "correct_answers": result.correct_answers,
+                    "total_questions": result.total_questions,
+                    "score": result.score,
+                    "test_time": result.test_time,
+                })
+
+        # Sort data by score (descending) and test_time (ascending)
+        sorted_data = sorted(data, key=lambda x: (-x["score"], x["test_time"]))
+
+        # Get top 5 results
+        top_5_results = sorted_data[:5]
+
+        return Response(top_5_results)
+
+
 
 
 

@@ -3,7 +3,7 @@ from .views import (
     ScienceListView, QuizListView, ResultCreateAPIView,
     ScienceCreateAPIView, ScienceUpdateAPIView, ScienceDestroyAPIView,
     QuizCreateAPIView, Result_Telegram_Bot_CreateVIEW, Result_Telegram_Bot_ListView, 
-    Get_Student_Result_By_TelegramID, ResultListView, Results_ALL_View
+    Get_Student_Result_By_TelegramID, ResultListView, Results_ALL_View, Results_EXAM_View
 
 )
 
@@ -12,6 +12,7 @@ urlpatterns = [
 
     #################################     RESULT      ####################
     path('result_all/', Results_ALL_View.as_view(), name='result_all'),
+    path('result_pass_exam/', Results_EXAM_View.as_view(), name='result_pass_exam'),
 
     #################################     TELEGRAM     ####################
     path('telegram_user/create/', Result_Telegram_Bot_CreateVIEW.as_view(), name='telegram_user'),

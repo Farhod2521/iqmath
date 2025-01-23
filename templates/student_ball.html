@@ -159,33 +159,20 @@
                             
                               <div class="table-responsive">
                                 <table id="file_export" class="table w-100 table-striped table-bordered display text-nowrap">
-                                  <thead>
-                                    <!-- start row -->
-                                    <tr>
-                                      <th>F.I.SH</th>
-                                      <th>Viloyat</th>
-                                      <th>Tug'ilgan kuni</th>
-                                      <th>Telfon raqam</th>
-                                      <th>Jami balli</th>
-                                      <th>Nechtasini topgan</th>
-                                      <th>Vaqt</th>
-                                    </tr>
-                                    <!-- end row -->
-                                  </thead>
-                                  <tbody>
-                              
-                                    <tr>
-                                      <td>Shad Decker</td>
-                                      <td>Regional Director</td>
-                                      <td>Edinburgh</td>
-                                      <td>51</td>
-                                      <td>2008/11/13</td>
-                                      <td>$183,000</td>
-                                      <td>$183,000</td>
-                                    </tr>
-                            
-                                  </tbody>
-                       
+                                    <thead>
+                                        <tr>
+                                            <th>F.I.SH</th>
+                                            <th>Viloyat</th>
+                                            <th>Tug'ilgan kuni</th>
+                                            <th>Telefon raqam</th>
+                                            <th>Jami balli</th>
+                                            <th>Nechtasini topgan</th>
+                                            <th>Vaqt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be inserted here dynamically -->
+                                    </tbody>
                                 </table>
                               </div>
                             </div>
@@ -287,6 +274,47 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     
     <script>
+
+    const apiUrl = "https://jetmind.uz/api/v1/quiz/result_all/";
+
+    // Fetch data from API and populate the table
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector("#file_export tbody");
+            
+            // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+            if ($.fn.DataTable.isDataTable('#file_export')) {
+                $('#file_export').DataTable().clear().destroy();
+            }
+
+            // Ma'lumotlarni qo'shish
+            data.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.full_name}</td>
+                    <td>${item.region}</td>
+                    <td>${item.brithday}</td>
+                    <td>${item.phone}</td>
+                    <td>${item.score}</td>
+                    <td>${item.correct_answers} / ${item.total_questions}</td>
+                    <td>${item.test_time} min</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // DataTable-ni qayta ishga tushirish
+            $('#file_export').DataTable({
+                dom: "Bfrtip",
+                buttons: [
+                    { extend: "excel", className: "btn btn-success" }
+                ],
+                pageLength: 10,
+                destroy: true // Eski DataTable'ni tozalash
+            });
+        })
+        .catch(error => console.error("Error fetching data:", error));
+  
         $(document).ready(function () {
             $('#file_export_telegram').DataTable({
                 dom: "Bfrtip",
