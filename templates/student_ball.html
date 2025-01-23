@@ -190,59 +190,16 @@
                                   <thead>
                                     <!-- start row -->
                                     <tr>
-                                      <th>F.I.SH</th>
-                                      <th>Viloyat</th>
-                                      <th>Tuman</th>
-                                      <th>Yoshi</th>
-                                      <th>Tug'ilgan kuni</th>
-                                      <th>Telfon raqam</th>
+                                        <th>F.I.SH</th>
+                                        <th>Viloyat</th>
+                                        <th>Tug'ilgan kuni</th>
+                                        <th>Telefon raqam</th>
+                                        <th>Jami balli</th>
+                                        <th>Nechtasini topgan</th>
+                                        <th>Vaqt</th>
                                     </tr>
                                     <!-- end row -->
                                   </thead>
-                                  <tbody>
-                                    <!-- start row -->
-                                  
-                                   
-                                    <tr>
-                                      <td>Jonas Alexander</td>
-                                      <td>Developer</td>
-                                      <td>San Francisco</td>
-                                      <td>30</td>
-                                      <td>2010/07/14</td>
-                                      <td>$86,500</td>
-                                    </tr>
-                                    <!-- end row -->
-                                    <!-- start row -->
-                                    <tr>
-                                      <td>Shad Decker</td>
-                                      <td>Regional Director</td>
-                                      <td>Edinburgh</td>
-                                      <td>51</td>
-                                      <td>2008/11/13</td>
-                                      <td>$183,000</td>
-                                    </tr>
-                                    <!-- end row -->
-                                    <!-- start row -->
-                                    <tr>
-                                      <td>Michael Bruce</td>
-                                      <td>Javascript Developer</td>
-                                      <td>Singapore</td>
-                                      <td>29</td>
-                                      <td>2011/06/27</td>
-                                      <td>$183,000</td>
-                                    </tr>
-                                    <!-- end row -->
-                                    <!-- start row -->
-                                    <tr>
-                                      <td>Donna Snider</td>
-                                      <td>Customer Support</td>
-                                      <td>New York</td>
-                                      <td>27</td>
-                                      <td>2011/01/25</td>
-                                      <td>$112,000</td>
-                                    </tr>
-                                    <!-- end row -->
-                                  </tbody>
                           
                                 </table>
                               </div>
@@ -275,6 +232,73 @@
     
     <script>
 
+
+
+    // API URL for "result_pass_exam"
+    const pass_exam_url = "https://jetmind.uz/api/v1/quiz/result_pass_exam/";
+
+    // Fetch data from API and populate the table
+    fetch(pass_exam_url)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector("#file_export_telegram tbody");
+            
+            // Tozalash va qayta yuklash uchun DataTable'ni yo'q qilish
+            if ($.fn.DataTable.isDataTable('#file_export_telegram')) {
+                $('#file_export_telegram').DataTable().clear().destroy();
+            }
+
+            // Ma'lumotlarni qo'shish
+            data.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.full_name}</td>
+                    <td>${item.region}</td>
+                    <td>${item.brithday}</td>
+                    <td>${item.phone}</td>
+                    <td>${item.score}</td>
+                    <td>${item.correct_answers} / ${item.total_questions}</td>
+                    <td>${item.test_time} min</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // DataTable-ni qayta ishga tushirish
+            $('#file_export_telegram').DataTable({
+                dom: "Bfrtip",
+                buttons: [
+                    { extend: "excel", className: "btn btn-success" },
+                    {
+                        text: "Xabar yuborish", // Tugma matni
+                        className: "btn btn-outline-success",
+                        action: function () {
+                            // Modalni ko'rsatish
+                            $('#samedata-modal').modal('show');
+                        }
+                    },                     
+                    {
+                        text: "O'quvchi qo'shish", // Tugma matni
+                        className: "btn btn-outline-success",
+                        action: function () {
+                            // Modalni ko'rsatish
+                            $('#vertical-center-modal').modal('show');
+                        }
+                    },
+                    {
+                        text: "O'quvchi chetlashtirish", // Tugma matni
+                        className: "btn btn-outline-success",
+                        action: function () {
+                            // Modalni ko'rsatish
+                            $('#chetlashtirish').modal('show');
+                        }
+                    }
+                ],
+                pageLength: 10
+            });
+        })
+        .catch(error => console.error("Error fetching data:", error));
+
+    // API URL for "result_all"
     const apiUrl = "https://jetmind.uz/api/v1/quiz/result_all/";
 
     // Fetch data from API and populate the table
@@ -314,7 +338,7 @@
             });
         })
         .catch(error => console.error("Error fetching data:", error));
-  
+
         $(document).ready(function () {
             $('#file_export_telegram').DataTable({
                 dom: "Bfrtip",
