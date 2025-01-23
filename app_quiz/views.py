@@ -11,7 +11,7 @@ import jwt
 from rest_framework.exceptions import AuthenticationFailed
 import random
 
-from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView
 
 from datetime import datetime
 import requests
@@ -305,6 +305,27 @@ class ResultCreateAPIView(APIView):
 
 
 
+
+class Results_ALL_View(APIView):
+    def get(self, request, *args, **kwargs):
+        # Fetch all students
+        students = Student.objects.all()
+        data = []
+        for student in students:
+            results = Result.objects.filter(student=student)
+            for result in results:
+                data.append({
+                    "full_name": student.full_name,
+                    "region": student.region,
+                    "brithday": student.brithday,
+                    "phone": student.user.phone,
+                    "correct_answers": result.correct_answers,
+                    "total_questions": result.total_questions,
+                    "score": result.score,
+                    "test_time": result.test_time,
+                })
+
+        return Response(data)
 
 
 
