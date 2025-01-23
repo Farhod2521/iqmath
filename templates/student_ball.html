@@ -573,7 +573,7 @@ fetch(pass_exam_delete)
             });
         });
         $(document).ready(function () {
-            $('#file_export').DataTable({
+            $('#file_export').DataTable().destroy()({
                 dom: "Bfrtip",
                 buttons: [
                     { extend: "excel", className: "btn btn-success" }
