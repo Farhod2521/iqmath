@@ -43,11 +43,9 @@
                 quizDiv.classList.add("card", "mb-3");
 
                 quizDiv.innerHTML = `
-                    <div class="card-body">
-                        <h3 class="card-title">${quiz.name}</h3>
-                        <p><strong>Davomiylik:</strong> ${quiz.duration_in_minutes} daqiqa</p>
-                        <p><strong>Boshlanish sanasi:</strong> ${new Date(quiz.start_date).toLocaleString()}</p>
-                        <p><strong>Tugash sanasi:</strong> ${new Date(quiz.end_date).toLocaleString()}</p>
+                    <div >
+                        <h3 class="card-title">${quiz.name}</h3> <br><br>
+           
                         <button class="btn btn-primary d-block w-100" onclick="startQuiz(${quiz.id})">Testlar</button>
                     </div>
                 `;

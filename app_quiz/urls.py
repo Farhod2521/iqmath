@@ -35,4 +35,5 @@ urlpatterns = [
     path('submit-quiz-result/', ResultCreateAPIView.as_view(), name='submit-quiz-result'),
     path('quiz/add/', QuizCreateAPIView.as_view(), name='submit-quiz-result'),
     path('result/list/', ResultListView.as_view(), name='submit-quiz-result'),
+    path('result/list/', ResultListView.as_view(), name='submit-quiz-result'),
 ]

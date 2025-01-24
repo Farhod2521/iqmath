@@ -19,7 +19,13 @@ from django.shortcuts import get_object_or_404
 
 
 
-
+class QuizCreateAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = QuizSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Quiz muvaffaqiyatli yaratildi!", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Get_Student_Result_By_TelegramID(APIView):
@@ -116,9 +122,7 @@ class ScienceDestroyAPIView(DestroyAPIView):
 
 
 
-class QuizCreateAPIView(CreateAPIView):
-    queryset = Quiz.objects.all()
-    serializer_class = Quiz_Add_Serializers
+
 
 class ResultListView(APIView):
     # permission_classes = [IsAuthenticated]
