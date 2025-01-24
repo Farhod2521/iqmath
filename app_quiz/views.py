@@ -334,7 +334,7 @@ class Results_Add_View(APIView):
         students = Student.objects.all()
         data = []
         for student in students:
-            results = Result.objects.filter(student=student, status_exam=False)
+            results = Result.objects.filter(student=student, status_exam__in=[None, False])
             for result in results:
                 data.append({
                     "id": result.id,
