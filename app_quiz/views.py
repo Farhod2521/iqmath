@@ -322,7 +322,7 @@ class ResultCreateAPIView(APIView):
             "correct_answers": correct_answers,
             "correct_questions": correct_questions,
             "incorrect_questions": incorrect_questions,
-            "random_score": random_score,
+            "random_score": round(result.score, 1),
             "test_time":test_tim,
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
@@ -349,7 +349,7 @@ class Results_ALL_View(APIView):
                     "phone": student.user.phone,
                     "correct_answers": result.correct_answers,
                     "total_questions": result.total_questions,
-                    "score": result.score,
+                    "score": round(result.score, 1),
                     "test_time": test_tim,
                     "status_exam": result.status_exam,
                 })
@@ -375,7 +375,7 @@ class Results_Add_View(APIView):
                     "phone": student.user.phone,
                     "correct_answers": result.correct_answers,
                     "total_questions": result.total_questions,
-                    "score": result.score,
+                    "score": round(result.score, 1),
                     "test_time": test_tim,
                     "status_exam": result.status_exam,  # `status_exam` ham qo'shildi
                 })
@@ -402,7 +402,7 @@ class Results_EXAM_View(APIView):
                     "phone": student.user.phone,
                     "correct_answers": result.correct_answers,
                     "total_questions": result.total_questions,
-                    "score": result.score,
+                    "score": round(result.score, 1),
                     "test_time": test_tim,
                 })
 
