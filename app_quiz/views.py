@@ -19,6 +19,26 @@ from django.shortcuts import get_object_or_404
 
 
 
+def format_test_time(test_time_str):
+    try:
+        # timedelta formatidagi vaqtni o'qish
+        time_parts = test_time_str.split(":")
+        hours, minutes, seconds = map(int, time_parts)
+        total_seconds = hours * 3600 + minutes * 60 + seconds
+        # Faqat MM:SS ko'rinishda formatlash
+        minutes, seconds = divmod(total_seconds, 60)
+        return f"{minutes:02}:{seconds:02}"
+    except ValueError:
+        raise ValueError("test_time must be in 'H:MM:SS' format.")
+
+
+
+
+
+
+
+
+
 class QuizCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = QuizSerializer(data=request.data)
@@ -302,7 +322,7 @@ class ResultCreateAPIView(APIView):
             "correct_questions": correct_questions,
             "incorrect_questions": incorrect_questions,
             "random_score": random_score,
-            "test_time": str(timedelta(seconds=int(result.test_time))),
+            "test_time": format_test_time(str(result.test_time)),
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
 
