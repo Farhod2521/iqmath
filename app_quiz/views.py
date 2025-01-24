@@ -338,7 +338,9 @@ class Results_ALL_View(APIView):
         data = []
         for student in students:
             results = Result.objects.filter(student=student)
+            
             for result in results:
+                test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
                 data.append({
                     "id": result.id,
                     "full_name": student.full_name,
@@ -348,7 +350,7 @@ class Results_ALL_View(APIView):
                     "correct_answers": result.correct_answers,
                     "total_questions": result.total_questions,
                     "score": result.score,
-                    "test_time": result.test_time,
+                    "test_time": test_tim,
                     "status_exam": result.status_exam,
                 })
 
@@ -364,6 +366,7 @@ class Results_Add_View(APIView):
                                           )
             
             for result in results:
+                test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
                 data.append({
                     "id": result.id,
                     "full_name": student.full_name,
@@ -373,7 +376,7 @@ class Results_Add_View(APIView):
                     "correct_answers": result.correct_answers,
                     "total_questions": result.total_questions,
                     "score": result.score,
-                    "test_time": result.test_time,
+                    "test_time": test_tim,
                     "status_exam": result.status_exam,  # `status_exam` ham qo'shildi
                 })
 
@@ -390,6 +393,7 @@ class Results_EXAM_View(APIView):
                            Q(status_exam__isnull=True) | Q(status_exam=False)
                                           )
             for result in results:
+                test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
                 data.append({
                     "id": result.id,
                     "full_name": student.full_name,
@@ -399,7 +403,7 @@ class Results_EXAM_View(APIView):
                     "correct_answers": result.correct_answers,
                     "total_questions": result.total_questions,
                     "score": result.score,
-                    "test_time": result.test_time,
+                    "test_time": test_tim,
                 })
 
         sorted_data = sorted(data, key=lambda x: (-x["score"], x["test_time"]))
