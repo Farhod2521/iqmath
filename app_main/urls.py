@@ -3,7 +3,8 @@ from django.urls import path
 
 from .views import (
 student_dashboard, olimpiada, student_profile, 
-login, sms_code, teachers_dashboard, quiz_student, result_student, students_ball_teacher, teacher_login
+login, sms_code, teachers_dashboard, quiz_student, result_student, students_ball_teacher, teacher_login, teacher_quiz_add,
+question_teacher,
 )
 
 urlpatterns = [
@@ -28,5 +29,7 @@ urlpatterns = [
     path("teachers_dashboard/", teachers_dashboard, name="teachers_dashboard"),
     path("students_balls/", students_ball_teacher, name="students_ball_teacher"),
     path("teacher_login/", teacher_login, name="teacher_login"),
+    path("teacher_quiz_add/", teacher_quiz_add, name="teacher_quiz_add"),
+    path("question_teacher/", question_teacher, name="question_teacher"),
 
 ]

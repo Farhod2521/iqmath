@@ -45,7 +45,7 @@ class ScienceSerializer(serializers.ModelSerializer):
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
-        fields = ['id', 'question', 'A', 'B', 'C', 'D', 'grade', 'science']
+        fields = ['id', 'question', 'A', 'B', 'C', 'D', 'grade', 'science', "answer", "score"]
 
 
 from rest_framework import serializers

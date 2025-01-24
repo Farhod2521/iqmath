@@ -47,3 +47,10 @@ def teacher_login(request):
 
 def  students_ball_teacher(request):
     return render(request, "student_ball.html")
+
+def  teacher_quiz_add(request):
+    return render(request, "teacher_quiz_add.html")
+
+
+def  question_teacher(request):
+    return render(request, "question_teacher.html")

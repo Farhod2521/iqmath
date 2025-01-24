@@ -1,0 +1,115 @@
+{% extends "base_teacher.html" %}
+{% load static %}
+{% block content %}
+
+
+
+
+
+    <style>
+.table td,
+.table th {
+    vertical-align: middle;
+    word-break: break-word;
+}
+
+.table th {
+    text-align: center;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .table td,
+    .table th {
+        font-size: 0.9rem;
+    }
+}
+
+
+    </style>
+   <tbody id="questions-list">
+    <!-- API orqali to'ldiriladi -->
+</tbody>
+      <div class="body-wrapper">
+        <div class="container">
+          <div class="row">
+       
+   
+            <div class="card">
+                <div class="card-body">
+                  <div class="mb-2">
+                    <h4 class="card-title mb-0">File export</h4>
+                  </div>
+           
+                  <div class="table-responsive">
+                    <table id="file_export" class="table w-100 table-striped table-bordered display text-nowrap">
+                      <thead>
+                        <!-- start row -->
+                        <tr>
+                            <th>№</th>
+                            <th>Savol</th>
+                            <th>Javob</th>
+                            <th>Ball</th>
+                     
+                          </tr>
+                        <!-- end row -->
+                      </thead>
+                      <tbody id="questions-list">
+                        <!-- API orqali to'ldiriladi -->
+                    </tbody>
+
+                    </table>
+                  </div>
+                </div>
+              </div>
+      
+        </div>
+        
+        
+        </div>
+      </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const apiBaseUrl = "https://jetmind.uz/api/v1/quiz/quizzes/";
+    const questionsListContainer = document.getElementById("questions-list");
+    const urlParams = new URLSearchParams(window.location.search);
+    const quizId = urlParams.get("id");
+
+    if (quizId) {
+        fetch(apiBaseUrl + `${quizId}/`)
+            .then((response) => response.json())
+            .then((data) => {
+                data.forEach((question, index) => {
+                    const questionRow = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${question.question}</td>
+                            <td>${question.answer}</td>
+                            <td>${question.score}</td>
+                    
+                        </tr>
+                    `;
+                    questionsListContainer.insertAdjacentHTML("beforeend", questionRow);
+                });
+            })
+            .catch((error) => console.error("Error fetching questions:", error));
+    } else {
+        questionsListContainer.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center">Quiz ID topilmadi!</td>
+            </tr>
+        `;
+    }
+});
+
+
+</script>
+
+{% endblock content %}
