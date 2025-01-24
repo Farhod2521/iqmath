@@ -361,7 +361,9 @@ class Results_EXAM_View(APIView):
         data = []
 
         for student in students:
-            results = Result.objects.filter(student=student, status_exam__in=[None, True])
+            results = Result.objects.filter(student=student).filter(
+                           Q(status_exam__isnull=True) | Q(status_exam=False)
+                                          )
             for result in results:
                 data.append({
                     "id": result.id,
