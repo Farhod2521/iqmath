@@ -328,13 +328,15 @@ class Results_ALL_View(APIView):
                 })
 
         return Response(data)
-
+from django.db.models import Q
 class Results_Add_View(APIView):
     def get(self, request, *args, **kwargs):
         students = Student.objects.all()
         data = []
         for student in students:
-            results = Result.objects.filter(student=student, status_exam__in=[None, False])
+            results = Result.objects.filter(student=student).filter(
+                           Q(status_exam__isnull=True) | Q(status_exam=False)
+                                          )
             
             for result in results:
                 data.append({
