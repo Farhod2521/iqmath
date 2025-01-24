@@ -119,6 +119,46 @@
       <script src="https://cdn.ckeditor.com/4.25.0/standard/ckeditor.js"></script>
       <script>
 
+
+
+
+document.querySelector('.btn-success').addEventListener('click', function() {
+        var question = document.getElementById('question').value;
+        var optionA = document.getElementById('option-a').value;
+        var optionB = document.getElementById('option-b').value;
+        var optionC = document.getElementById('option-c').value;
+        var optionD = document.getElementById('option-d').value;
+        var correctAnswer = document.getElementById('correct-answer').value;
+        var score = document.getElementById('score').value;
+
+        var data = {
+            "science": 1,  // o'zgarmas qiymat
+            "question": `<p>${question}</p>`,
+            "A": `<p>${optionA}</p>`,
+            "B": `<p>${optionB}</p>`,
+            "C": `<p>${optionC}</p>`,
+            "D": `<p>${optionD}</p>`,
+            "answer": correctAnswer,
+            "score": parseFloat(score),  // ballni float turida
+            "grade": "10"  // o'zgarmas qiymat
+        };
+
+        fetch('https://jetmind.uz/api/v1/quiz/quiz/add/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Xato:', error);
+            alert('Xato yuz berdi. Iltimos, qayta urinib ko\'ring.');
+        });
+    });
     // CKEditor barcha textarea'lar uchun ulash
     document.addEventListener("DOMContentLoaded", function () {
         const richEditors = document.querySelectorAll(".rich-editor");
