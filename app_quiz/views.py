@@ -208,7 +208,7 @@ class QuizListView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+from datetime import timedelta
 
 class ResultCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -302,7 +302,7 @@ class ResultCreateAPIView(APIView):
             "correct_questions": correct_questions,
             "incorrect_questions": incorrect_questions,
             "random_score": random_score,
-            "test_time": result.test_time,
+            "test_time": str(timedelta(seconds=result.test_time)),
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
 
