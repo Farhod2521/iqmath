@@ -17,31 +17,19 @@ from datetime import datetime
 import requests
 from django.shortcuts import get_object_or_404
 
-from datetime import timedelta
 
-def format_test_time(test_time):
+
+def format_test_time(test_time_str):
     try:
-        # Agar test_time stringda kelsa va 'H:MM:SS' formatida bo'lsa
-        if isinstance(test_time, str) and ":" in test_time:
-            time_parts = list(map(int, test_time.split(":")))
-            if len(time_parts) == 3:  # H:MM:SS
-                hours, minutes, seconds = time_parts
-            elif len(time_parts) == 2:  # MM:SS
-                hours = 0
-                minutes, seconds = time_parts
-            else:
-                raise ValueError
-            total_seconds = hours * 3600 + minutes * 60 + seconds
-        elif isinstance(test_time, (int, float)):  # Sekundlarda kelsa
-            total_seconds = int(test_time)
-        else:
-            raise ValueError
-
-        # Faqat MM:SS formatiga o‘tkazish
+        # timedelta formatidagi vaqtni o'qish
+        time_parts = test_time_str.split(":")
+        hours, minutes, seconds = map(int, time_parts)
+        total_seconds = hours * 3600 + minutes * 60 + seconds
+        # Faqat MM:SS ko'rinishda formatlash
         minutes, seconds = divmod(total_seconds, 60)
         return f"{minutes:02}:{seconds:02}"
     except ValueError:
-        raise ValueError("test_time must be in seconds or 'H:MM:SS' format.")
+        raise ValueError("test_time must be in 'H:MM:SS' format.")
 
 
 
@@ -240,7 +228,7 @@ class QuizListView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+from datetime import timedelta
 
 class ResultCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -334,7 +322,7 @@ class ResultCreateAPIView(APIView):
             "correct_questions": correct_questions,
             "incorrect_questions": incorrect_questions,
             "random_score": random_score,
-            "test_time": format_test_time(result.test_time),
+            "test_time": str(timedelta(seconds=int(result.test_time))),
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
 
