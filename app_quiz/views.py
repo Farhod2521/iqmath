@@ -331,11 +331,11 @@ class Results_ALL_View(APIView):
 
 class Results_Add_View(APIView):
     def get(self, request, *args, **kwargs):
-        # Fetch all students
         students = Student.objects.all()
         data = []
         for student in students:
             results = Result.objects.filter(student=student, status_exam__in=[None, False])
+            
             for result in results:
                 data.append({
                     "id": result.id,
@@ -347,6 +347,7 @@ class Results_Add_View(APIView):
                     "total_questions": result.total_questions,
                     "score": result.score,
                     "test_time": result.test_time,
+                    "status_exam": result.status_exam,  # `status_exam` ham qo'shildi
                 })
 
         return Response(data)
