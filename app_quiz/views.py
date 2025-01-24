@@ -312,7 +312,8 @@ class ResultCreateAPIView(APIView):
         )
 
 
-        # Muvaffaqiyatli javob qaytarish
+        test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
+
         response_data = {
             "student": student.id,
             "science": science.id,
@@ -322,7 +323,7 @@ class ResultCreateAPIView(APIView):
             "correct_questions": correct_questions,
             "incorrect_questions": incorrect_questions,
             "random_score": random_score,
-            "test_time": str(timedelta(seconds=int(result.test_time))),
+            "test_time":test_tim,
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
 
