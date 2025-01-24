@@ -324,6 +324,7 @@ class Results_ALL_View(APIView):
                     "total_questions": result.total_questions,
                     "score": result.score,
                     "test_time": result.test_time,
+                    "status_exam": result.status_exam,
                 })
 
         return Response(data)
