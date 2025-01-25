@@ -257,8 +257,7 @@ class ResultCreateAPIView(APIView):
         # Foydalanuvchi kiritgan ma'lumotlar
         data = request.data
         answers = data.get("answers", [])
-        random_answers = data.get("random_answers", [])  # Random javoblar
-        test_time = data.get("test_time", 0)  # Test vaqti (daqiqalarda)
+        test_time = data.get("test_time", 0)  # Test vaqti (sekundlarda)
 
         # Natija hisoblash uchun o'zgaruvchilar
         total_questions = len(answers)
@@ -267,30 +266,37 @@ class ResultCreateAPIView(APIView):
         science_set = set()
         correct_questions = []
         incorrect_questions = []
+        answer_more = []
 
         # Javoblarni qayta ishlash
-        for answer in answers:
+        for index, answer in enumerate(answers, start=1):
             quiz_id = answer.get("quiz_id")
             user_answer = answer.get("answer")
 
             try:
                 quiz = Quiz.objects.get(id=quiz_id)
                 science_set.add(quiz.science)
-                if quiz.answer == user_answer:
+
+                is_correct = quiz.answer == user_answer
+                score = quiz.score if is_correct else 0
+
+                if is_correct:
                     correct_answers += 1
                     total_score += quiz.score
-                    correct_questions.append(quiz.id)  # To'g'ri savollarni saqlash
+                    correct_questions.append(quiz.id)
                 else:
-                    incorrect_questions.append(quiz.id)  # Xato savollarni saqlash
+                    incorrect_questions.append(quiz.id)
+
+                # Tartiblangan savollarni qo'shish
+                answer_more.append({
+                    "order": index,
+                    "quiz_id": quiz_id,
+                    "score": quiz.score,
+                    "is_correct": is_correct
+                })
+
             except Quiz.DoesNotExist:
                 return Response({"error": f"Quiz with id {quiz_id} not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        # Random savollarni saqlash
-        random_score = {}
-        for rand_answer in random_answers:
-            question_id = rand_answer.get("question_id")
-            score = rand_answer.get("score")
-            random_score[question_id] = score
 
         # Fandagi savollarni tekshirish
         if len(science_set) != 1:
@@ -307,26 +313,22 @@ class ResultCreateAPIView(APIView):
             correct_answers=correct_answers,
             correct_questions=correct_questions,
             incorrect_questions=incorrect_questions,
-            random_score=random_score,
-            test_time=test_time,  # Test vaqti saqlanadi
+            answer_more=answer_more,
+            test_time=test_time
         )
 
-
-        test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
-
+        # Javob ma'lumotlarini qaytarish
+        test_time_str = str(timedelta(seconds=int(result.test_time)))[:-3]
         response_data = {
             "student": student.id,
             "science": science.id,
             "score": total_score,
             "total_questions": total_questions,
             "correct_answers": correct_answers,
-            "correct_questions": correct_questions,
-            "incorrect_questions": incorrect_questions,
-            "random_score": round(result.score, 1),
-            "test_time":test_tim,
+            "answer_more": answer_more,
+            "test_time": test_time_str,
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
-
 
 
 

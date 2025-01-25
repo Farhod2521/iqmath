@@ -67,7 +67,7 @@ class Result(models.Model):
     status_exam = models.BooleanField(null=True, default=None)
     correct_questions = models.JSONField(default=list)  # To'g'ri javoblar (savollarni id-lari bilan)
     incorrect_questions = models.JSONField(default=list)  # Xato javoblar (savollarni id-lari bilan)
-    random_score = models.JSONField(default=dict)  # Random savollar va ularga tegishli ballar
+    answer_more = models.JSONField(default=list)  # Random savollar va ularga tegishli ballar
 
     def __str__(self):
         return f"{self.student} - {self.quiz} - {self.score}"
