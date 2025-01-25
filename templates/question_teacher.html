@@ -116,65 +116,115 @@
       <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
       <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-      <script src="https://cdn.ckeditor.com/4.25.0/standard/ckeditor.js"></script>
+      <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
       <script>
 
 
 
 
 document.querySelector('.btn-success').addEventListener('click', function() {
-        var question = document.getElementById('question').value;
-        var optionA = document.getElementById('option-a').value;
-        var optionB = document.getElementById('option-b').value;
-        var optionC = document.getElementById('option-c').value;
-        var optionD = document.getElementById('option-d').value;
-        var correctAnswer = document.getElementById('correct-answer').value;
-        var score = document.getElementById('score').value;
+    // CKEditor orqali kiritilgan matnlarni olish
+    var question = CKEDITOR.instances['question'].getData();
+    var optionA = CKEDITOR.instances['option-a'].getData();
+    var optionB = CKEDITOR.instances['option-b'].getData();
+    var optionC = CKEDITOR.instances['option-c'].getData();
+    var optionD = CKEDITOR.instances['option-d'].getData();
+    var correctAnswer = document.getElementById('correct-answer').value;
+    var score = document.getElementById('score').value;
 
-        var data = {
-            "science": 1,  // o'zgarmas qiymat
-            "question": `<p>${question}</p>`,
-            "A": `<p>${optionA}</p>`,
-            "B": `<p>${optionB}</p>`,
-            "C": `<p>${optionC}</p>`,
-            "D": `<p>${optionD}</p>`,
-            "answer": correctAnswer,
-            "score": parseFloat(score),  // ballni float turida
-            "grade": "10"  // o'zgarmas qiymat
-        };
+    var data = {
+        "science": 1,  // o'zgarmas qiymat
+        "question": question, // CKEditor orqali olingan savol
+        "A": optionA, // CKEditor orqali olingan javob A
+        "B": optionB, // CKEditor orqali olingan javob B
+        "C": optionC, // CKEditor orqali olingan javob C
+        "D": optionD, // CKEditor orqali olingan javob D
+        "answer": correctAnswer,
+        "score": parseFloat(score),  // ballni float turida
+        "grade": "10"  // o'zgarmas qiymat
+    };
 
-        fetch('https://jetmind.uz/api/v1/quiz/quiz/add/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error('Xato:', error);
-            alert('Xato yuz berdi. Iltimos, qayta urinib ko\'ring.');
-        });
+    fetch('https://jetmind.uz/api/v1/quiz/quiz/add/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.location.reload(); // Muvaffaqiyatli so'rovdan so'ng sahifani yangilash
+    })
+    .catch(error => {
+        console.error('Xato:', error);
+        alert('Xato yuz berdi. Iltimos, qayta urinib ko\'ring.');
     });
+});
     // CKEditor barcha textarea'lar uchun ulash
-    document.addEventListener("DOMContentLoaded", function () {
-        const richEditors = document.querySelectorAll(".rich-editor");
-        richEditors.forEach((editor) => {
-            CKEDITOR.replace(editor.id, {
-                toolbar: [
-                    { name: "basicstyles", items: ["Bold", "Italic", "Underline", "Strike"] },
-                    { name: "paragraph", items: ["NumberedList", "BulletedList"] },
-                    { name: "insert", items: ["Image", "Table"] },
-                    { name: "tools", items: ["Maximize"] }
+// CKEditor barcha textarea'lar uchun ulash
+document.addEventListener("DOMContentLoaded", function () {
+    const richEditors = document.querySelectorAll(".rich-editor");
+    richEditors.forEach((editor) => {
+        CKEDITOR.replace(editor.id, {
+            // Asosiy vositalar paneli
+            toolbar: [
+                    // Asosiy formatlash opsiyalari
+                    { name: "basicstyles", items: ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "TextColor", "BGColor"] },
+                    
+                    // Matnni formatlash va ro'yxatlar
+                    { name: "paragraph", items: ["NumberedList", "BulletedList", "-", "Outdent", "Indent", "Blockquote"] },
+                    
+                    // Kiritish vositalari (rasmlar, jadval va boshqalar)
+                    { name: "insert", items: ["Image", "Table", "HorizontalRule", "Smiley", "SpecialChar", "Link", "Unlink"] },
+                    
+                    // Kodni qo'shish va sintaksisni ta'kidlash
+                    { name: "codesnippet", items: ["CodeSnippet"] },
+                    
+                    // MathJax formulalari qo'shish
+                    { name: "math", items: ["MathJax"] },
+                    
+                    // Vositalar (ekranni kengaytirish)
+                    { name: "tools", items: ["Maximize", "ShowBlocks", "Source", "Undo", "Redo"] },
+                    
+                    // Imlo tekshiruvi
+                    { name: "spellchecker", items: ["SpellChecker"] },
+
+                    // HTML ko'rinishini ko'rsatish
+                    { name: "editing", items: ["Find", "Replace"] },
+
+                    // Matn ranglarini o'zgartirish
+                    { name: "colors", items: ["TextColor", "BGColor"] },
+
+                    // Xususiy belgilarning qo'shilishi
+                    { name: "insert", items: ["SpecialChar"] }
                 ],
-                height: 200
-            });
+            // Matnning maksimal balandligi
+            height: 200,
+            // Resurslarni optimallashtirish
+            removePlugins: 'elementspath,notification',
+            // Maksimal ruxsat berilgan ko'rinish
+            maxLength: 1000,
+            // O'zgartirilgan matnni saqlash
+            autoSave: {
+                delay: 3000,
+                saveDetectionSelectors: '.cke_save'
+            },
+            // Ogohlantirishni yashirish
+            on: {
+                instanceReady: function(evt) {
+                    var editor = evt.editor;
+                    // CKEditor ogohlantirishlarini yashirish
+                    editor.container.find('.cke_warning').hide();
+                }
+            }
         });
     });
+});
 
+    CKEDITOR.on('instanceReady', function(evt) {
+    var editor = evt.editor;
+    editor.container.find('.cke_warning').hide();
+});
 
 
       document.addEventListener("DOMContentLoaded", function () {

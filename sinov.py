@@ -16,8 +16,8 @@ headers = {
 data = {
     "answers": [
         {"quiz_id": 5, "answer": "A"}, 
-        {"quiz_id": 6, "answer": "B"}, 
-        {"quiz_id": 9, "answer": "D"}
+        {"quiz_id": 6, "answer": "A"}, 
+        {"quiz_id": 9, "answer": "A"}
     ],
     "test_time": 26
 }
