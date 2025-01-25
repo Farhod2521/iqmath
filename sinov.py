@@ -1,23 +1,30 @@
 import requests
 
-# API endpoint
-url = "https://jetmind.uz/api/v1/student/profile/"
+# URL manzili
+url = "https://jetmind.uz/api/v1/quiz/submit-quiz-result/"
 
 # Bearer token
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3Mzk3ODgxLCJpYXQiOjE3MzczODcwODEsImp0aSI6IjE5MTMwNDg5M2ZhYjRiZDU4YTVhY2NhMGQxMjI3MGRkIiwidXNlcl9pZCI6NTYsInN0dWRlbnRfaWQiOjU0fQ.KJaC2sNRNFNVcpBSFZQmh1PXuR8LvD77-vKEVWyKO48"
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM3ODAzMDQzLCJpYXQiOjE3Mzc3OTIyNDMsImp0aSI6IjU5MmU2NTdhNjQyMzQ2NGQ4YzBmYzZjZjhiNDcxZjM1IiwidXNlcl9pZCI6NTYsInN0dWRlbnRfaWQiOjU0fQ.F5__yR741iELgzXqDvDLVrZ8TQjfbte98i2-P4TaWio"
 
 # So'rov sarlavhalari
 headers = {
     "Authorization": f"Bearer {token}",
+    "Content-Type": "application/json"
 }
 
-# GET so'rovini yuborish
-response = requests.get(url, headers=headers)
+# Yuboriladigan ma'lumotlar
+data = {
+    "answers": [
+        {"quiz_id": 5, "answer": "A"}, 
+        {"quiz_id": 6, "answer": "B"}, 
+        {"quiz_id": 9, "answer": "D"}
+    ],
+    "test_time": 26
+}
 
-# Javobni tekshirish
-if response.status_code == 200:
-    print("Muvaffaqiyatli so'rov:")
-    print(response.json())  # JSON javobni ko'rsatadi
-else:
-    print(f"Xatolik yuz berdi: {response.status_code}")
-    print(response.text)
+# POST so'rovi
+response = requests.post(url, headers=headers, json=data)
+
+# Javobni chiqarish
+print("Status code:", response.status_code)
+print("Response data:", response.json())

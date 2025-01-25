@@ -318,7 +318,7 @@ class ResultCreateAPIView(APIView):
         )
 
         # Javob ma'lumotlarini qaytarish
-        test_time_str = str(timedelta(seconds=int(result.test_time)))[:-3]
+        test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
         response_data = {
             "student": student.id,
             "science": science.id,
@@ -326,7 +326,7 @@ class ResultCreateAPIView(APIView):
             "total_questions": total_questions,
             "correct_answers": correct_answers,
             "answer_more": answer_more,
-            "test_time": test_time_str,
+            "test_time": test_tim,
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
 
