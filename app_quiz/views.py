@@ -316,7 +316,31 @@ class ResultCreateAPIView(APIView):
             answer_more=answer_more,
             test_time=test_time
         )
+        phone = student.user.phone
+        result_bot = Result_Telegram_Bot.objects.filter(phone=phone).first()
+        if not result_bot:
+            return Response({"detail": "Telefon raqam topilmadi."}, status=status.HTTP_404_NOT_FOUND)
 
+        telegram_id = result_bot.telegram_id
+        message = (
+            f"🏅 Test natijalari:\n\n"
+            f"👤 O'quvchi: {student.full_name}\n"
+            f"🔬 Fan: {science.name}\n"
+            f"✅ To'g'ri javoblar: {correct_answers}/{total_questions}\n"
+            f"📊 Umumiy ball: {total_score}\n"
+            f"⏱️ Test vaqti: {result.test_time}\n"
+        )
+        BOT_TOKEN = "7826335243:AAGXTZvtzJ8e8g35Hrx_Swy7mwmRPd3T7Po"
+        TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        response = requests.post(
+            TELEGRAM_API_URL,
+            json={"chat_id": telegram_id, "text": message, "parse_mode": "HTML"}
+        )
+        if response.status_code != 200:
+            return Response(
+                {"detail": f"Telegram xatolik: {response.json()}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         # Javob ma'lumotlarini qaytarish
         test_tim = (str(timedelta(seconds=int(result.test_time))))[2:7]
         response_data = {
